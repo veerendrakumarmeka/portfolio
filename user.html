@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Portal - DIGIFILIATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --primary: #D32F2F;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-input: #0f3460;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --border: #334155
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            transition: all 0.3s
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--border)
+        }
+
+        .login-box h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem
+        }
+
+        .login-box>p {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted)
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 1rem
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary)
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.2rem
+        }
+
+        .portal {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto
+        }
+
+        .portal.active {
+            display: block
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .welcome {
+            font-size: 1.5rem;
+            font-weight: 600
+        }
+
+        .welcome span {
+            color: var(--primary)
+        }
+
+        .header-btns {
+            display: flex;
+            gap: 0.5rem
+        }
+
+        .header-btns button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .pwd-btn {
+            background: var(--bg-input);
+            color: var(--text);
+            border: 1px solid var(--border) !important
+        }
+
+        .logout-btn {
+            background: var(--primary);
+            color: white
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border)
+        }
+
+        .stat-card h3 {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary)
+        }
+
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem
+        }
+
+        .campaign-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border)
+        }
+
+        .campaign-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem
+        }
+
+        .campaign-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem
+        }
+
+        .campaign-card a {
+            color: var(--primary);
+            word-break: break-all
+        }
+
+        .campaign-card .count {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(211, 47, 47, 0.1);
+            border-radius: 0.5rem;
+            color: var(--primary);
+            font-weight: 600
+        }
+
+        .toast {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border-radius: 0.5rem;
+            display: none;
+            z-index: 1000
+        }
+
+        .toast.show {
+            display: block
+        }
+
+        .toast.error {
+            background: var(--primary)
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center
+        }
+
+        .modal.active {
+            display: flex
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border)
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem
+        }
+
+        .btn-cancel {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+    <div class="toast" id="toast"></div>
+
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <h1><i class="fas fa-user"></i> User Portal</h1>
+            <p>Sign in to view your campaigns</p>
+            <form id="loginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+            <p style="margin-top:1.5rem;text-align:center;font-size:0.9rem;"><a href="home.html"
+                    style="color:var(--primary);">← Homepage</a> | <a href="admin.html"
+                    style="color:var(--primary);">Admin Portal →</a></p>
+        </div>
+    </div>
+
+    <div class="portal" id="portal">
+        <header class="header">
+            <div class="welcome">Welcome, <span id="userName">User</span></div>
+            <div class="header-btns">
+                <button class="pwd-btn" onclick="openModal('pwdModal')"><i class="fas fa-key"></i> Password</button>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+        <div class="stats">
+            <div class="stat-card">
+                <h3><i class="fas fa-bullhorn"></i> My Campaigns</h3>
+                <div class="value" id="totalCampaigns">0</div>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-mouse-pointer"></i> Total Clicks</h3>
+                <div class="value" id="totalClicks">0</div>
+            </div>
+        </div>
+        <h2 style="margin-bottom:1rem;">My Assigned Campaigns</h2>
+        <div class="campaigns-grid" id="campaignsGrid"></div>
+    </div>
+
+    <div class="modal" id="pwdModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2><button class="modal-close" onclick="closeModal('pwdModal')">&times;</button>
+            </div>
+            <div class="form-group"><label>Current Password</label><input type="password" id="currPwd"></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="newPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmPwd"></div>
+            <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('pwdModal')">Cancel</button><button
+                    class="btn-submit" onclick="changePwd()">Update</button></div>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_DB = {
+            admins: [{ id: 1, name: 'Rakesh Kumar', email: 'rakesh@admin.com', password: 'admin123', status: 'Active' }],
+            users: [{ id: 1, name: 'John Doe', email: 'john@user.com', password: 'user123', status: 'Active', type: 'Punch' }, { id: 2, name: 'Jane Smith', email: 'jane@user.com', password: 'user123', status: 'Active', type: 'Click' }],
+            campaigns: [{ id: 1, name: 'Summer Sale', offerId: 'OFF001', country: 'USA', link: 'https://example.com/summer', created: '2024-01-15', status: 'Active' }, { id: 2, name: 'Winter Deals', offerId: 'OFF002', country: 'UK', link: 'https://example.com/winter', created: '2024-01-20', status: 'Active' }],
+            userCampaigns: [{ id: 1, userId: 1, campaignId: 1, count: 150 }, { id: 2, userId: 1, campaignId: 2, count: 89 }]
+        };
+
+        function getDB() {
+            const s = localStorage.getItem('digifiliate_db');
+            return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB));
+        }
+        function saveDB(db) { localStorage.setItem('digifiliate_db', JSON.stringify(db)); }
+
+        let currentUser = null;
+
+        function toast(msg, err = false) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (err ? ' error' : '');
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const db = getDB(); // Always get fresh data
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Find user with matching email, password, and active status
+            const user = db.users.find(u => u.email === email && u.password === password && u.status === 'Active');
+
+            if (user) {
+                currentUser = user;
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('portal').classList.add('active');
+                renderCampaigns();
+            } else {
+                toast('Invalid credentials or account inactive!', true);
+            }
+        });
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('portal').classList.remove('active');
+            document.getElementById('loginForm').reset();
+        }
+
+        function renderCampaigns() {
+            const db = getDB(); // Always get fresh data
+
+            // Check if user still exists and is active
+            const userStillExists = db.users.find(u => u.id === currentUser.id && u.status === 'Active');
+            if (!userStillExists) {
+                toast('Your account has been deleted or deactivated!', true);
+                logout();
+                return;
+            }
+
+            // Get user's campaigns
+            const userCampaigns = db.userCampaigns.filter(uc => uc.userId === currentUser.id);
+            const campaigns = userCampaigns.map(uc => {
+                const camp = db.campaigns.find(c => c.id === uc.campaignId && c.status === 'Active');
+                return camp ? { ...camp, count: uc.count } : null;
+            }).filter(Boolean);
+
+            document.getElementById('totalCampaigns').textContent = campaigns.length;
+            document.getElementById('totalClicks').textContent = campaigns.reduce((sum, c) => sum + c.count, 0);
+
+            document.getElementById('campaignsGrid').innerHTML = campaigns.length ? campaigns.map(c => `
+                <div class="campaign-card">
+                    <h3>${c.name}</h3>
+                    <p><strong>Offer ID:</strong> ${c.offerId}</p>
+                    <p><strong>Country:</strong> ${c.country}</p>
+                    <p><strong>Link:</strong> <a href="${c.link}" target="_blank">${c.link}</a></p>
+                    <div class="count"><i class="fas fa-mouse-pointer"></i> ${c.count} Clicks</div>
+                </div>
+            `).join('') : '<p style="color:var(--text-muted);grid-column:1/-1;">No campaigns assigned yet.</p>';
+        }
+
+        function changePwd() {
+            const db = getDB();
+            const curr = document.getElementById('currPwd').value;
+            const newP = document.getElementById('newPwd').value;
+            const confirm = document.getElementById('confirmPwd').value;
+
+            // Find user in fresh DB
+            const user = db.users.find(u => u.id === currentUser.id);
+            if (!user) {
+                toast('User not found!', true);
+                logout();
+                return;
+            }
+
+            if (user.password !== curr) return toast('Wrong current password', true);
+            if (newP !== confirm) return toast('Passwords do not match', true);
+            if (newP.length < 4) return toast('Min 4 characters', true);
+
+            user.password = newP;
+            currentUser.password = newP;
+            saveDB(db);
+            closeModal('pwdModal');
+            toast('Password changed!');
+            document.getElementById('currPwd').value = '';
+            document.getElementById('newPwd').value = '';
+            document.getElementById('confirmPwd').value = '';
+        }
+
+        function toggleTheme() {
+            const b = document.body, i = document.getElementById('themeIcon');
+            if (b.getAttribute('data-theme') === 'light') {
+                b.removeAttribute('data-theme');
+                i.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                b.setAttribute('data-theme', 'light');
+                i.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+            document.getElementById('themeIcon').className = 'fas fa-sun';
+        }
+
+        // Auto-refresh campaigns every 5 seconds to pick up changes from admin
+        setInterval(() => {
+            if (currentUser) renderCampaigns();
+        }, 5000);
+    </script>
+</body>
+
+</html>
