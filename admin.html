@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - DIGIFILIATE</title>
+    <title>DIGIFILIATE - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -23,6 +23,8 @@
             --text-muted: #94a3b8;
             --success: #22c55e;
             --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
             --border: #334155
         }
 
@@ -62,7 +64,7 @@
         .login-box h1 {
             text-align: center;
             color: var(--primary);
-            font-size: 2rem;
+            font-size: 1.75rem;
             margin-bottom: 0.5rem
         }
 
@@ -79,7 +81,8 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text-muted)
+            color: var(--text-muted);
+            font-size: 0.9rem
         }
 
         .form-group input,
@@ -108,7 +111,12 @@
             color: white;
             font-size: 1rem;
             font-weight: 600;
-            cursor: pointer
+            cursor: pointer;
+            transition: opacity 0.3s
+        }
+
+        .btn:hover {
+            opacity: 0.9
         }
 
         .app-container {
@@ -128,7 +136,8 @@
             position: fixed;
             left: 0;
             top: 0;
-            overflow-y: auto
+            overflow-y: auto;
+            z-index: 50
         }
 
         .logo {
@@ -162,6 +171,11 @@
         .nav-link.active {
             background: rgba(211, 47, 47, 0.2);
             color: var(--text)
+        }
+
+        .nav-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed
         }
 
         .submenu {
@@ -201,6 +215,24 @@
 
         .welcome span {
             color: var(--primary)
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem
+        }
+
+        .role-badge.admin {
+            background: rgba(211, 47, 47, 0.2);
+            color: var(--primary)
+        }
+
+        .role-badge.user {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info)
         }
 
         .header-actions {
@@ -370,12 +402,12 @@
 
         .status.click {
             background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6
+            color: var(--info)
         }
 
         .status.punch {
             background: rgba(245, 158, 11, 0.2);
-            color: #f59e0b
+            color: var(--warning)
         }
 
         .actions {
@@ -522,6 +554,10 @@
             background: var(--danger)
         }
 
+        .toast.warning {
+            background: var(--warning)
+        }
+
         .settings-section {
             background: var(--bg-card);
             padding: 1.5rem;
@@ -555,6 +591,64 @@
             width: 16px;
             height: 16px;
             accent-color: var(--primary)
+        }
+
+        .campaign-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border)
+        }
+
+        .campaign-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem
+        }
+
+        .campaign-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem
+        }
+
+        .campaign-card a {
+            color: var(--primary);
+            word-break: break-all
+        }
+
+        .campaign-card .count {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(211, 47, 47, 0.1);
+            border-radius: 0.5rem;
+            color: var(--primary);
+            font-weight: 600
+        }
+
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem
+        }
+
+        .access-denied {
+            text-align: center;
+            padding: 4rem 2rem
+        }
+
+        .access-denied i {
+            font-size: 4rem;
+            color: var(--danger);
+            margin-bottom: 1rem
+        }
+
+        .access-denied h2 {
+            margin-bottom: 0.5rem
+        }
+
+        .access-denied p {
+            color: var(--text-muted)
         }
 
         @media(max-width:900px) {
@@ -591,18 +685,20 @@
 
 <body>
     <div class="toast" id="toast"></div>
+
     <div class="login-container" id="loginPage">
         <div class="login-box">
-            <h1><i class="fas fa-shield-halved"></i> Admin Portal</h1>
-            <p>Sign in to manage your platform</p>
+            <h1><i class="fas fa-cube"></i> DIGIFILIATE</h1>
+            <p>Sign in to access your dashboard</p>
             <form id="loginForm">
-                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
-                <button type="submit" class="btn">Sign In</button>
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required
+                        placeholder="Enter your email"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required
+                        placeholder="Enter your password"></div>
+                <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
             </form>
             <p style="margin-top:1.5rem;text-align:center;font-size:0.9rem;"><a href="home.html"
-                    style="color:var(--primary);">← Homepage</a> | <a href="user.html"
-                    style="color:var(--primary);">User Portal →</a></p>
+                    style="color:var(--primary);"><i class="fas fa-arrow-left"></i> Back to Homepage</a></p>
         </div>
     </div>
 
@@ -612,12 +708,14 @@
             <ul class="nav-menu">
                 <li class="nav-item"><a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i>
                         Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" data-page="admins"><i class="fas fa-user-shield"></i>
-                        Administrators</a></li>
-                <li class="nav-item"><a class="nav-link" data-page="users"><i class="fas fa-users"></i> Manage Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="submenu"><i class="fas fa-bullhorn"></i> Campaigns <i
+                <li class="nav-item"><a class="nav-link" data-page="myCampaigns"><i class="fas fa-bullhorn"></i> My
+                        Campaigns</a></li>
+                <li class="nav-item admin-only"><a class="nav-link" data-page="admins"><i
+                            class="fas fa-user-shield"></i> Administrators</a></li>
+                <li class="nav-item admin-only"><a class="nav-link" data-page="users"><i class="fas fa-users"></i>
+                        Manage Users</a></li>
+                <li class="nav-item admin-only">
+                    <a class="nav-link" data-toggle="submenu"><i class="fas fa-tasks"></i> Campaign Mgmt <i
                             class="fas fa-chevron-down" style="margin-left:auto;font-size:0.6rem;"></i></a>
                     <ul class="submenu" id="submenu">
                         <li><a class="nav-link" data-page="campaigns">All Campaigns</a></li>
@@ -626,8 +724,8 @@
                         <li><a class="nav-link" data-page="resetCount">Set Count Zero</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
-                </li>
+                <li class="nav-item admin-only"><a class="nav-link" data-page="settings"><i class="fas fa-cog"></i>
+                        Settings</a></li>
             </ul>
         </aside>
         <main class="main-content">
@@ -635,7 +733,8 @@
                 <div style="display:flex;align-items:center;gap:1rem;">
                     <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i
                             class="fas fa-bars"></i></button>
-                    <div class="welcome">Welcome, <span id="userName">Admin</span></div>
+                    <div class="welcome">Welcome, <span id="userName">User</span><span class="role-badge"
+                            id="roleBadge">User</span></div>
                 </div>
                 <div class="header-actions">
                     <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon"
@@ -646,30 +745,23 @@
                 </div>
             </header>
 
+            <!-- Dashboard Page -->
             <div class="page active" id="dashboardPage">
                 <div class="page-header">
                     <h1 class="page-title">Dashboard</h1>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Admins</h3>
-                        <div class="value" id="sAdmins">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Users</h3>
-                        <div class="value" id="sUsers">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Campaigns</h3>
-                        <div class="value" id="sCamps">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Active</h3>
-                        <div class="value" id="sActive">0</div>
-                    </div>
-                </div>
+                <div class="stats-grid" id="dashStats"></div>
             </div>
 
+            <!-- My Campaigns Page (for Users) -->
+            <div class="page" id="myCampaignsPage">
+                <div class="page-header">
+                    <h1 class="page-title">My Assigned Campaigns</h1>
+                </div>
+                <div class="campaigns-grid" id="myCampaignsGrid"></div>
+            </div>
+
+            <!-- Admin Pages -->
             <div class="page" id="adminsPage">
                 <div class="page-header">
                     <h1 class="page-title">Administrators</h1><button class="add-btn" onclick="openAddAdmin()"><i
@@ -759,11 +851,10 @@
                     <h1 class="page-title">Assign Campaigns</h1>
                 </div>
                 <div class="table-container" style="padding:1.5rem;">
-                    <select class="form-group"
-                        style="width:100%;padding:0.75rem;background:var(--bg-input);border:1px solid var(--border);border-radius:0.5rem;color:var(--text);margin-bottom:1rem;"
-                        id="assignUser">
-                        <option value="">Select User...</option>
-                    </select>
+                    <div class="form-group"><label>Select User</label><select id="assignUser"
+                            style="width:100%;padding:0.75rem;background:var(--bg-input);border:1px solid var(--border);border-radius:0.5rem;color:var(--text);">
+                            <option value="">Select User...</option>
+                        </select></div>
                     <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
                         <button class="add-btn"
                             style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);"
@@ -773,7 +864,8 @@
                             onclick="checkAll(false)">Uncheck All</button>
                     </div>
                     <div class="campaign-list" id="assignList"></div>
-                    <div class="modal-footer"><button class="btn-submit" onclick="submitAssign()">Submit</button></div>
+                    <div class="modal-footer"><button class="btn-submit" onclick="submitAssign()">Assign
+                            Selected</button></div>
                 </div>
             </div>
 
@@ -788,6 +880,7 @@
                                 <th>User</th>
                                 <th>Campaign</th>
                                 <th>Country</th>
+                                <th>Type</th>
                                 <th>Count</th>
                                 <th>Actions</th>
                             </tr>
@@ -806,7 +899,7 @@
                     <h2>Reset All Counts to Zero</h2>
                     <p style="color:var(--text-muted);margin:1rem 0;">This will set all campaign counts to zero.</p>
                     <button class="add-btn" style="display:inline-flex;" onclick="resetCounts()"><i
-                            class="fas fa-check"></i> Reset</button>
+                            class="fas fa-check"></i> Reset All</button>
                 </div>
             </div>
 
@@ -816,10 +909,19 @@
                 </div>
                 <div class="settings-section">
                     <h3><i class="fas fa-database"></i> Database Management</h3>
-                    <p style="color:var(--text-muted);margin-bottom:1rem;">Reset database to default values (this will
-                        delete all your changes)</p>
+                    <p style="color:var(--text-muted);margin-bottom:1rem;">Reset database to default values</p>
                     <button class="add-btn" style="background:var(--danger);" onclick="resetDB()"><i
                             class="fas fa-trash"></i> Reset Database</button>
+                </div>
+            </div>
+
+            <!-- Access Denied Page -->
+            <div class="page" id="accessDeniedPage">
+                <div class="access-denied">
+                    <i class="fas fa-lock"></i>
+                    <h2>Access Denied</h2>
+                    <p>You don't have permission to access this section. This feature is only available to
+                        administrators.</p>
                 </div>
             </div>
         </main>
@@ -833,10 +935,11 @@
                     onclick="closeModal('adminModal')">&times;</button>
             </div>
             <input type="hidden" id="adminEditId">
-            <div class="form-group"><label>Name</label><input id="adminName"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="adminEmail"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="adminPwd"
-                    placeholder="Enter password"></div>
+            <div class="form-group"><label>Name</label><input id="adminName" placeholder="Full name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="adminEmail" placeholder="Email address">
+            </div>
+            <div class="form-group"><label>Password</label><input type="password" id="adminPwd" placeholder="Password">
+            </div>
             <div class="form-group"><label>Status</label><select id="adminStatus">
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -855,7 +958,7 @@
             </div>
             <input type="hidden" id="adminPwdId">
             <div class="form-group"><label>New Password</label><input type="password" id="newAdminPwd"></div>
-            <div class="form-group"><label>Confirm</label><input type="password" id="confirmAdminPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmAdminPwd"></div>
             <div class="modal-footer"><button class="btn-cancel"
                     onclick="closeModal('adminPwdModal')">Cancel</button><button class="btn-submit"
                     onclick="resetAdminPwd()">Update</button></div>
@@ -870,7 +973,7 @@
             </div>
             <div class="form-group"><label>Current Password</label><input type="password" id="currPwd"></div>
             <div class="form-group"><label>New Password</label><input type="password" id="myNewPwd"></div>
-            <div class="form-group"><label>Confirm</label><input type="password" id="myConfirmPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="myConfirmPwd"></div>
             <div class="modal-footer"><button class="btn-cancel"
                     onclick="closeModal('myPwdModal')">Cancel</button><button class="btn-submit"
                     onclick="changeMyPwd()">Update</button></div>
@@ -884,10 +987,11 @@
                     onclick="closeModal('userModal')">&times;</button>
             </div>
             <input type="hidden" id="userEditId">
-            <div class="form-group"><label>Name</label><input id="userNameInp"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="userEmail"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="userPwd"
-                    placeholder="Enter password"></div>
+            <div class="form-group"><label>Name</label><input id="userNameInp" placeholder="Full name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="userEmail" placeholder="Email address">
+            </div>
+            <div class="form-group"><label>Password</label><input type="password" id="userPwd" placeholder="Password">
+            </div>
             <div class="form-group"><label>Status</label><select id="userStatus">
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -909,7 +1013,7 @@
             </div>
             <input type="hidden" id="userPwdId">
             <div class="form-group"><label>New Password</label><input type="password" id="newUserPwd"></div>
-            <div class="form-group"><label>Confirm</label><input type="password" id="confirmUserPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmUserPwd"></div>
             <div class="modal-footer"><button class="btn-cancel"
                     onclick="closeModal('userPwdModal')">Cancel</button><button class="btn-submit"
                     onclick="resetUserPwd()">Update</button></div>
@@ -923,10 +1027,10 @@
                     onclick="closeModal('campModal')">&times;</button>
             </div>
             <input type="hidden" id="campEditId">
-            <div class="form-group"><label>Name</label><input id="campName"></div>
-            <div class="form-group"><label>Offer ID</label><input id="campOffer"></div>
+            <div class="form-group"><label>Name</label><input id="campName" placeholder="Campaign name"></div>
+            <div class="form-group"><label>Offer ID</label><input id="campOffer" placeholder="Offer ID"></div>
             <div class="form-group"><label>Country</label><select id="campCountry"></select></div>
-            <div class="form-group"><label>Link</label><input id="campLink"></div>
+            <div class="form-group"><label>Link</label><input id="campLink" placeholder="https://"></div>
             <div class="form-group"><label>Type</label><select id="campType">
                     <option value="Click">Click</option>
                     <option value="Punch">Punch</option>
@@ -944,28 +1048,55 @@
             admins: [{ id: 1, name: 'Rakesh Kumar', email: 'rakesh@admin.com', password: 'admin123', status: 'Active' }],
             users: [{ id: 1, name: 'John Doe', email: 'john@user.com', password: 'user123', status: 'Active', type: 'Punch' }, { id: 2, name: 'Jane Smith', email: 'jane@user.com', password: 'user123', status: 'Active', type: 'Click' }],
             campaigns: [{ id: 1, name: 'Summer Sale', offerId: 'OFF001', country: 'USA', link: 'https://example.com/summer', created: '2024-01-15', type: 'Click' }, { id: 2, name: 'Winter Deals', offerId: 'OFF002', country: 'UK', link: 'https://example.com/winter', created: '2024-01-20', type: 'Punch' }],
-            userCampaigns: [{ id: 1, userId: 1, campaignId: 1, count: 150 }, { id: 2, userId: 1, campaignId: 2, count: 89 }]
+            userCampaigns: [{ id: 1, visibleId: 1, userId: 1, campaignId: 1, count: 150 }, { id: 2, visibleId: 2, userId: 1, campaignId: 2, count: 89 }]
         };
 
-        // DB Functions
-        function getDB() {
-            const s = localStorage.getItem('digifiliate_db');
-            return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB));
-        }
+        function getDB() { const s = localStorage.getItem('digifiliate_db'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB)); }
         function saveDB() { localStorage.setItem('digifiliate_db', JSON.stringify(db)); }
-        function resetDB() { if (confirm('Reset all data?')) { localStorage.removeItem('digifiliate_db'); location.reload(); } }
+        function resetDB() { if (confirm('Reset all data? This will log you out.')) { localStorage.removeItem('digifiliate_db'); localStorage.removeItem('digifiliate_session'); location.reload(); } }
 
         let db = getDB();
-        let currentAdmin = null;
+        let currentUser = null;
+        let isAdmin = false;
         let page = { admins: 1, users: 1, camps: 1 };
 
         // Init country dropdown
         document.getElementById('campCountry').innerHTML = COUNTRIES.map(c => `<option value="${c}">${c}</option>`).join('');
 
-        // Toast
-        function toast(msg, err = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' error' : ''); setTimeout(() => t.className = 'toast', 3000); }
+        // Toast & Modal
+        function toast(msg, type = 'success') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (type === 'error' ? ' error' : type === 'warning' ? ' warning' : ''); setTimeout(() => t.className = 'toast', 3000); }
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // Session Management
+        function saveSession() {
+            const session = { userId: currentUser.id, isAdmin: isAdmin, timestamp: Date.now() };
+            localStorage.setItem('digifiliate_session', JSON.stringify(session));
+        }
+        function loadSession() {
+            const s = localStorage.getItem('digifiliate_session');
+            if (!s) return false;
+            const session = JSON.parse(s);
+            // Session expires in 24 hours
+            if (Date.now() - session.timestamp > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem('digifiliate_session');
+                return false;
+            }
+            db = getDB();
+            if (session.isAdmin) {
+                currentUser = db.admins.find(a => a.id === session.userId && a.status === 'Active');
+                isAdmin = true;
+            } else {
+                currentUser = db.users.find(u => u.id === session.userId && u.status === 'Active');
+                isAdmin = false;
+            }
+            if (!currentUser) {
+                localStorage.removeItem('digifiliate_session');
+                return false;
+            }
+            return true;
+        }
+        function clearSession() { localStorage.removeItem('digifiliate_session'); }
 
         // Auth
         document.getElementById('loginForm').addEventListener('submit', function (e) {
@@ -973,26 +1104,80 @@
             db = getDB();
             const email = document.getElementById('loginEmail').value;
             const pwd = document.getElementById('loginPassword').value;
-            const admin = db.admins.find(a => a.email === email && a.password === pwd && a.status === 'Active');
-            if (admin) {
-                currentAdmin = admin;
-                document.getElementById('userName').textContent = admin.name.split(' ')[0];
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('appContainer').classList.add('active');
-                updateStats(); renderAll();
-            } else { toast('Invalid credentials!', true); }
-        });
-        function logout() { currentAdmin = null; document.getElementById('loginPage').style.display = 'flex'; document.getElementById('appContainer').classList.remove('active'); }
 
-        // Nav
+            // Check admins first
+            let user = db.admins.find(a => a.email === email && a.password === pwd && a.status === 'Active');
+            if (user) {
+                currentUser = user;
+                isAdmin = true;
+            } else {
+                // Check users
+                user = db.users.find(u => u.email === email && u.password === pwd && u.status === 'Active');
+                if (user) {
+                    currentUser = user;
+                    isAdmin = false;
+                }
+            }
+
+            if (currentUser) {
+                saveSession();
+                showDashboard();
+            } else {
+                toast('Invalid credentials or account inactive!', 'error');
+            }
+        });
+
+        function showDashboard() {
+            document.getElementById('userName').textContent = currentUser.name.split(' ')[0];
+            const badge = document.getElementById('roleBadge');
+            badge.textContent = isAdmin ? 'Admin' : 'User';
+            badge.className = 'role-badge ' + (isAdmin ? 'admin' : 'user');
+
+            // Show/hide admin menu items
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = isAdmin ? 'block' : 'none';
+            });
+
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            updateStats();
+            renderAll();
+        }
+
+        function logout() {
+            currentUser = null;
+            isAdmin = false;
+            clearSession();
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Navigation with access control
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function () {
-                if (this.dataset.toggle === 'submenu') { document.getElementById('submenu').classList.toggle('open'); return; }
+                if (this.dataset.toggle === 'submenu') {
+                    document.getElementById('submenu').classList.toggle('open');
+                    return;
+                }
                 if (this.dataset.page) {
+                    const pageName = this.dataset.page;
+                    const adminPages = ['admins', 'users', 'campaigns', 'assign', 'viewUC', 'resetCount', 'settings'];
+
+                    if (adminPages.includes(pageName) && !isAdmin) {
+                        // Show access denied
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                        document.getElementById('accessDeniedPage').classList.add('active');
+                        toast('Admin access required!', 'warning');
+                        return;
+                    }
+
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    document.getElementById(this.dataset.page + 'Page').classList.add('active');
+                    document.getElementById(pageName + 'Page').classList.add('active');
                     document.getElementById('sidebar').classList.remove('open');
                 }
             });
@@ -1000,10 +1185,36 @@
 
         // Stats
         function updateStats() {
-            document.getElementById('sAdmins').textContent = db.admins.length;
-            document.getElementById('sUsers').textContent = db.users.length;
-            document.getElementById('sCamps').textContent = db.campaigns.length;
-            document.getElementById('sActive').textContent = db.campaigns.filter(c => c.type === 'Click').length;
+            const statsHtml = isAdmin ? `
+                <div class="stat-card"><h3><i class="fas fa-user-shield"></i> Admins</h3><div class="value">${db.admins.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-users"></i> Users</h3><div class="value">${db.users.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> Campaigns</h3><div class="value">${db.campaigns.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Click Type</h3><div class="value">${db.campaigns.filter(c => c.type === 'Click').length}</div></div>
+            ` : `
+                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> My Campaigns</h3><div class="value">${db.userCampaigns.filter(uc => uc.userId === currentUser.id).length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Total Clicks</h3><div class="value">${db.userCampaigns.filter(uc => uc.userId === currentUser.id).reduce((s, uc) => s + uc.count, 0)}</div></div>
+            `;
+            document.getElementById('dashStats').innerHTML = statsHtml;
+        }
+
+        // My Campaigns (User view)
+        function renderMyCampaigns() {
+            const userCamps = db.userCampaigns.filter(uc => uc.userId === currentUser.id);
+            const campaigns = userCamps.map(uc => {
+                const camp = db.campaigns.find(c => c.id === uc.campaignId);
+                return camp ? { ...camp, count: uc.count, ucId: uc.id } : null;
+            }).filter(Boolean);
+
+            document.getElementById('myCampaignsGrid').innerHTML = campaigns.length ? campaigns.map(c => `
+                <div class="campaign-card">
+                    <h3><i class="fas fa-bullhorn"></i> ${c.name}</h3>
+                    <p><strong>Offer ID:</strong> ${c.offerId}</p>
+                    <p><strong>Country:</strong> ${c.country}</p>
+                    <p><strong>Type:</strong> <span class="status ${c.type.toLowerCase()}">${c.type}</span></p>
+                    <p><strong>Link:</strong> <a href="${c.link}" target="_blank">${c.link}</a></p>
+                    <div class="count"><i class="fas fa-mouse-pointer"></i> ${c.count} Clicks</div>
+                </div>
+            `).join('') : '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:2rem;">No campaigns assigned yet. Please contact your administrator.</p>';
         }
 
         // Render Tables
@@ -1015,7 +1226,7 @@
             const start = (page[key] - 1) * perPage;
             const items = filtered.slice(start, start + perPage);
             document.getElementById(tableId).innerHTML = items.length ? items.map(rowFn).join('') : '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
-            document.getElementById(infoId).textContent = `${start + 1}-${Math.min(start + perPage, filtered.length)} of ${filtered.length}`;
+            document.getElementById(infoId).textContent = `${filtered.length ? start + 1 : 0}-${Math.min(start + perPage, filtered.length)} of ${filtered.length}`;
             let html = `<button onclick="goPage('${key}',-1)" ${page[key] === 1 ? 'disabled' : ''}>‹</button>`;
             for (let i = 1; i <= totalPages; i++)html += `<button class="${i === page[key] ? 'active' : ''}" onclick="goPage('${key}',${i},true)">${i}</button>`;
             html += `<button onclick="goPage('${key}',1)" ${page[key] === totalPages ? 'disabled' : ''}>›</button>`;
@@ -1030,82 +1241,88 @@
             renderTable(db.users, 'userTable', 'userInfo', 'userPag', 'users', u => `<tr><td>${u.name}</td><td>${u.email}</td><td><span class="status ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.type}</td><td class="actions"><button class="action-btn edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openUserPwd(${u.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delUser(${u.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
         function renderCampaigns() {
-            renderTable(db.campaigns, 'campTable', 'campInfo', 'campPag', 'camps', c => `<tr><td>${c.name}</td><td>${c.offerId}</td><td>${c.country}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary)">${c.link.substring(0, 25)}...</a></td><td><span class="status ${c.type?.toLowerCase() || 'click'}">${c.type || 'Click'}</span></td><td class="actions"><button class="action-btn edit" onclick="editCamp(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="delCamp(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(db.campaigns, 'campTable', 'campInfo', 'campPag', 'camps', c => `<tr><td>${c.name}</td><td>${c.offerId}</td><td>${c.country}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary)">${c.link.substring(0, 30)}...</a></td><td><span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></td><td class="actions"><button class="action-btn edit" onclick="editCamp(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="delCamp(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
         function renderUC() {
-            document.getElementById('ucTable').innerHTML = db.userCampaigns.map(uc => {
+            document.getElementById('ucTable').innerHTML = db.userCampaigns.length ? db.userCampaigns.map(uc => {
                 const u = db.users.find(x => x.id === uc.userId);
                 const c = db.campaigns.find(x => x.id === uc.campaignId);
-                return `<tr><td>${u?.name || 'Deleted'}</td><td>${c?.name || 'Deleted'}</td><td>${c?.country || ''}</td><td>${uc.count}</td><td class="actions"><button class="action-btn delete" onclick="delUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`;
-            }).join('') || '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
+                return `<tr><td>${u?.name || '<em>Deleted</em>'}</td><td>${c?.name || '<em>Deleted</em>'}</td><td>${c?.country || '-'}</td><td><span class="status ${(c?.type || 'click').toLowerCase()}">${c?.type || 'Click'}</span></td><td>${uc.count}</td><td class="actions"><button class="action-btn delete" onclick="delUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('') : '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">No assignments</td></tr>';
         }
         function renderAssign() {
             document.getElementById('assignUser').innerHTML = '<option value="">Select User...</option>' + db.users.filter(u => u.status === 'Active').map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
-            document.getElementById('assignList').innerHTML = db.campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="ac_${c.id}" value="${c.id}"><label for="ac_${c.id}">${c.name} - ${c.country} (${c.type || 'Click'})</label></div>`).join('');
+            document.getElementById('assignList').innerHTML = db.campaigns.length ? db.campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="ac_${c.id}" value="${c.id}"><label for="ac_${c.id}">${c.name} - ${c.country} <span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></label></div>`).join('') : '<p style="padding:1rem;color:var(--text-muted);">No campaigns available</p>';
         }
-        function renderAll() { renderAdmins(); renderUsers(); renderCampaigns(); renderUC(); renderAssign(); }
+        function renderAll() { renderAdmins(); renderUsers(); renderCampaigns(); renderUC(); renderAssign(); renderMyCampaigns(); }
 
         // CRUD Admins
-        function openAddAdmin() { document.getElementById('adminEditId').value = ''; document.getElementById('adminName').value = ''; document.getElementById('adminEmail').value = ''; document.getElementById('adminPwd').value = ''; document.getElementById('adminModalTitle').textContent = 'Add Admin'; openModal('adminModal'); }
+        function openAddAdmin() { document.getElementById('adminEditId').value = ''; document.getElementById('adminName').value = ''; document.getElementById('adminEmail').value = ''; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = 'Active'; document.getElementById('adminModalTitle').textContent = 'Add Admin'; openModal('adminModal'); }
         function editAdmin(id) { const a = db.admins.find(x => x.id === id); document.getElementById('adminEditId').value = id; document.getElementById('adminName').value = a.name; document.getElementById('adminEmail').value = a.email; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = a.status; document.getElementById('adminModalTitle').textContent = 'Edit Admin'; openModal('adminModal'); }
         function saveAdmin() {
             const id = document.getElementById('adminEditId').value;
             const data = { name: document.getElementById('adminName').value, email: document.getElementById('adminEmail').value, status: document.getElementById('adminStatus').value };
             const pwd = document.getElementById('adminPwd').value;
-            if (!data.name || !data.email) return toast('Fill all fields', true);
+            if (!data.name || !data.email) return toast('Fill all fields', 'error');
             if (id) { const a = db.admins.find(x => x.id == id); Object.assign(a, data); if (pwd) a.password = pwd; }
-            else { if (!pwd) return toast('Password required', true); db.admins.push({ id: Date.now(), ...data, password: pwd }); }
+            else { if (!pwd) return toast('Password required', 'error'); db.admins.push({ id: Date.now(), ...data, password: pwd }); }
             saveDB(); closeModal('adminModal'); updateStats(); renderAdmins(); toast('Saved!');
         }
-        function delAdmin(id) { if (confirm('Delete?')) { db.admins = db.admins.filter(a => a.id !== id); saveDB(); updateStats(); renderAdmins(); toast('Deleted!'); } }
+        function delAdmin(id) { if (db.admins.length === 1) return toast('Cannot delete last admin', 'error'); if (confirm('Delete this admin?')) { db.admins = db.admins.filter(a => a.id !== id); saveDB(); updateStats(); renderAdmins(); toast('Deleted!'); } }
         function openAdminPwd(id) { document.getElementById('adminPwdId').value = id; document.getElementById('newAdminPwd').value = ''; document.getElementById('confirmAdminPwd').value = ''; openModal('adminPwdModal'); }
-        function resetAdminPwd() { const id = document.getElementById('adminPwdId').value; const p = document.getElementById('newAdminPwd').value; const c = document.getElementById('confirmAdminPwd').value; if (p !== c) return toast('Mismatch', true); if (p.length < 4) return toast('Min 4 chars', true); db.admins.find(a => a.id == id).password = p; saveDB(); closeModal('adminPwdModal'); toast('Updated!'); }
-        function changeMyPwd() { const curr = document.getElementById('currPwd').value; const p = document.getElementById('myNewPwd').value; const c = document.getElementById('myConfirmPwd').value; if (currentAdmin.password !== curr) return toast('Wrong password', true); if (p !== c) return toast('Mismatch', true); if (p.length < 4) return toast('Min 4 chars', true); currentAdmin.password = p; db.admins.find(a => a.id === currentAdmin.id).password = p; saveDB(); closeModal('myPwdModal'); toast('Changed!'); }
+        function resetAdminPwd() { const id = document.getElementById('adminPwdId').value; const p = document.getElementById('newAdminPwd').value; const c = document.getElementById('confirmAdminPwd').value; if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); db.admins.find(a => a.id == id).password = p; saveDB(); closeModal('adminPwdModal'); toast('Password updated!'); }
+        function changeMyPwd() { const curr = document.getElementById('currPwd').value; const p = document.getElementById('myNewPwd').value; const c = document.getElementById('myConfirmPwd').value; if (currentUser.password !== curr) return toast('Wrong current password', 'error'); if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); currentUser.password = p; if (isAdmin) { db.admins.find(a => a.id === currentUser.id).password = p; } else { db.users.find(u => u.id === currentUser.id).password = p; } saveDB(); closeModal('myPwdModal'); toast('Password changed!'); }
 
         // CRUD Users
-        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInp').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPwd').value = ''; document.getElementById('userModalTitle').textContent = 'Add User'; openModal('userModal'); }
+        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInp').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = 'Active'; document.getElementById('userType').value = 'Punch'; document.getElementById('userModalTitle').textContent = 'Add User'; openModal('userModal'); }
         function editUser(id) { const u = db.users.find(x => x.id === id); document.getElementById('userEditId').value = id; document.getElementById('userNameInp').value = u.name; document.getElementById('userEmail').value = u.email; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = u.status; document.getElementById('userType').value = u.type; document.getElementById('userModalTitle').textContent = 'Edit User'; openModal('userModal'); }
         function saveUser() {
             const id = document.getElementById('userEditId').value;
             const data = { name: document.getElementById('userNameInp').value, email: document.getElementById('userEmail').value, status: document.getElementById('userStatus').value, type: document.getElementById('userType').value };
             const pwd = document.getElementById('userPwd').value;
-            if (!data.name || !data.email) return toast('Fill all fields', true);
+            if (!data.name || !data.email) return toast('Fill all fields', 'error');
             if (id) { const u = db.users.find(x => x.id == id); Object.assign(u, data); if (pwd) u.password = pwd; }
-            else { if (!pwd) return toast('Password required', true); db.users.push({ id: Date.now(), ...data, password: pwd }); }
+            else { if (!pwd) return toast('Password required', 'error'); db.users.push({ id: Date.now(), ...data, password: pwd }); }
             saveDB(); closeModal('userModal'); updateStats(); renderAll(); toast('Saved!');
         }
-        function delUser(id) { if (confirm('Delete?')) { db.users = db.users.filter(u => u.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.userId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
+        function delUser(id) { if (confirm('Delete this user?')) { db.users = db.users.filter(u => u.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.userId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
         function openUserPwd(id) { document.getElementById('userPwdId').value = id; document.getElementById('newUserPwd').value = ''; document.getElementById('confirmUserPwd').value = ''; openModal('userPwdModal'); }
-        function resetUserPwd() { const id = document.getElementById('userPwdId').value; const p = document.getElementById('newUserPwd').value; const c = document.getElementById('confirmUserPwd').value; if (p !== c) return toast('Mismatch', true); if (p.length < 4) return toast('Min 4 chars', true); db.users.find(u => u.id == id).password = p; saveDB(); closeModal('userPwdModal'); toast('Updated!'); }
+        function resetUserPwd() { const id = document.getElementById('userPwdId').value; const p = document.getElementById('newUserPwd').value; const c = document.getElementById('confirmUserPwd').value; if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); db.users.find(u => u.id == id).password = p; saveDB(); closeModal('userPwdModal'); toast('Password updated!'); }
 
         // CRUD Campaigns
-        function openAddCampaign() { document.getElementById('campEditId').value = ''; document.getElementById('campName').value = ''; document.getElementById('campOffer').value = ''; document.getElementById('campLink').value = ''; document.getElementById('campModalTitle').textContent = 'Add Campaign'; openModal('campModal'); }
+        function openAddCampaign() { document.getElementById('campEditId').value = ''; document.getElementById('campName').value = ''; document.getElementById('campOffer').value = ''; document.getElementById('campLink').value = ''; document.getElementById('campType').value = 'Click'; document.getElementById('campModalTitle').textContent = 'Add Campaign'; openModal('campModal'); }
         function editCamp(id) { const c = db.campaigns.find(x => x.id === id); document.getElementById('campEditId').value = id; document.getElementById('campName').value = c.name; document.getElementById('campOffer').value = c.offerId; document.getElementById('campCountry').value = c.country; document.getElementById('campLink').value = c.link; document.getElementById('campType').value = c.type || 'Click'; document.getElementById('campModalTitle').textContent = 'Edit Campaign'; openModal('campModal'); }
         function saveCampaign() {
             const id = document.getElementById('campEditId').value;
             const data = { name: document.getElementById('campName').value, offerId: document.getElementById('campOffer').value, country: document.getElementById('campCountry').value, link: document.getElementById('campLink').value, type: document.getElementById('campType').value, created: new Date().toISOString().split('T')[0] };
-            if (!data.name) return toast('Name required', true);
+            if (!data.name) return toast('Name required', 'error');
             if (id) { const c = db.campaigns.find(x => x.id == id); Object.assign(c, data); }
             else { db.campaigns.push({ id: Date.now(), ...data }); }
             saveDB(); closeModal('campModal'); updateStats(); renderAll(); toast('Saved!');
         }
-        function delCamp(id) { if (confirm('Delete?')) { db.campaigns = db.campaigns.filter(c => c.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.campaignId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
+        function delCamp(id) { if (confirm('Delete this campaign?')) { db.campaigns = db.campaigns.filter(c => c.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.campaignId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
 
         // Assign & Reset
         function checkAll(v) { document.querySelectorAll('#assignList input').forEach(cb => cb.checked = v); }
         function submitAssign() {
             const userId = parseInt(document.getElementById('assignUser').value);
-            if (!userId) return toast('Select user', true);
-            document.querySelectorAll('#assignList input:checked').forEach(cb => {
+            if (!userId) return toast('Select a user first', 'error');
+            const checked = document.querySelectorAll('#assignList input:checked');
+            if (!checked.length) return toast('Select at least one campaign', 'error');
+            let added = 0;
+            checked.forEach(cb => {
                 const cid = parseInt(cb.value);
                 if (!db.userCampaigns.find(uc => uc.userId === userId && uc.campaignId === cid)) {
-                    db.userCampaigns.push({ id: Date.now() + Math.random(), userId, campaignId: cid, count: 0 });
+                    db.userCampaigns.push({ id: Date.now() + Math.random(), userId: userId, campaignId: cid, count: 0 });
+                    added++;
                 }
             });
-            saveDB(); renderAll(); toast('Assigned!');
+            saveDB(); renderAll();
+            if (added > 0) toast(`${added} campaign(s) assigned!`);
+            else toast('Campaigns already assigned', 'warning');
         }
-        function delUC(id) { if (confirm('Remove?')) { db.userCampaigns = db.userCampaigns.filter(uc => uc.id !== id); saveDB(); renderUC(); toast('Removed!'); } }
-        function resetCounts() { db.userCampaigns.forEach(uc => uc.count = 0); saveDB(); renderUC(); toast('Reset!'); }
+        function delUC(id) { if (confirm('Remove this assignment?')) { db.userCampaigns = db.userCampaigns.filter(uc => uc.id !== id); saveDB(); renderAll(); toast('Removed!'); } }
+        function resetCounts() { if (confirm('Reset all counts to zero?')) { db.userCampaigns.forEach(uc => uc.count = 0); saveDB(); renderAll(); toast('All counts reset!'); } }
 
         // Theme
         function toggleTheme() {
@@ -1114,6 +1331,11 @@
             else { b.setAttribute('data-theme', 'light'); i.className = 'fas fa-sun'; localStorage.setItem('theme', 'light'); }
         }
         if (localStorage.getItem('theme') === 'light') { document.body.setAttribute('data-theme', 'light'); document.getElementById('themeIcon').className = 'fas fa-sun'; }
+
+        // Check session on load
+        if (loadSession()) {
+            showDashboard();
+        }
 
         renderAll();
     </script>
