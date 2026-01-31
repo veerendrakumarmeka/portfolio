@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGIFILIATE - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --primary: #D32F2F;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-input: #0f3460;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --border: #334155
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            transition: all 0.3s
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--border)
+        }
+
+        .login-box h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem
+        }
+
+        .login-box>p {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 1rem
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary)
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s
+        }
+
+        .btn:hover {
+            opacity: 0.9
+        }
+
+        .app-container {
+            display: none
+        }
+
+        .app-container.active {
+            display: flex
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            min-height: 100vh;
+            padding: 1.5rem;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            z-index: 50
+        }
+
+        .logo {
+            padding: 1rem;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary)
+        }
+
+        .nav-menu {
+            list-style: none
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-muted);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(211, 47, 47, 0.2);
+            color: var(--text)
+        }
+
+        .nav-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed
+        }
+
+        .submenu {
+            list-style: none;
+            margin-left: 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s
+        }
+
+        .submenu.open {
+            max-height: 200px
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+            min-height: 100vh
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .welcome {
+            font-size: 1.25rem;
+            font-weight: 600
+        }
+
+        .welcome span {
+            color: var(--primary)
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem
+        }
+
+        .role-badge.admin {
+            background: rgba(211, 47, 47, 0.2);
+            color: var(--primary)
+        }
+
+        .role-badge.user {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info)
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap
+        }
+
+        .header-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem
+        }
+
+        .theme-btn {
+            background: var(--bg-input);
+            color: var(--text);
+            border: 1px solid var(--border) !important
+        }
+
+        .pwd-btn {
+            background: var(--bg-input);
+            color: var(--text);
+            border: 1px solid var(--border) !important
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white
+        }
+
+        .page {
+            display: none
+        }
+
+        .page.active {
+            display: block
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border)
+        }
+
+        .stat-card h3 {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary)
+        }
+
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            overflow: hidden
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-input);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: var(--text);
+            outline: none;
+            width: 150px
+        }
+
+        .add-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+            font-weight: 500
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th,
+        td {
+            padding: 0.875rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border)
+        }
+
+        th {
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase
+        }
+
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600
+        }
+
+        .status.active {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success)
+        }
+
+        .status.inactive {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger)
+        }
+
+        .status.click {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info)
+        }
+
+        .status.punch {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning)
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.25rem
+        }
+
+        .action-btn {
+            padding: 0.4rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer
+        }
+
+        .action-btn.edit {
+            background: rgba(211, 47, 47, 0.2);
+            color: var(--primary)
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger)
+        }
+
+        .action-btn.key {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success)
+        }
+
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .pagination {
+            display: flex;
+            gap: 0.25rem
+        }
+
+        .pagination button {
+            padding: 0.4rem 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.8rem
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            border-color: var(--primary)
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center
+        }
+
+        .modal.active {
+            display: flex
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem
+        }
+
+        .btn-cancel {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer
+        }
+
+        .toast {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border-radius: 0.5rem;
+            display: none;
+            z-index: 1001
+        }
+
+        .toast.show {
+            display: block
+        }
+
+        .toast.error {
+            background: var(--danger)
+        }
+
+        .toast.warning {
+            background: var(--warning)
+        }
+
+        .settings-section {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem
+        }
+
+        .settings-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1rem
+        }
+
+        .campaign-list {
+            max-height: 250px;
+            overflow-y: auto;
+            background: var(--bg-input);
+            border-radius: 0.5rem;
+            padding: 0.5rem
+        }
+
+        .campaign-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .campaign-item input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary)
+        }
+
+        .campaign-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border)
+        }
+
+        .campaign-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem
+        }
+
+        .campaign-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem
+        }
+
+        .campaign-card a {
+            color: var(--primary);
+            word-break: break-all
+        }
+
+        .campaign-card .count {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(211, 47, 47, 0.1);
+            border-radius: 0.5rem;
+            color: var(--primary);
+            font-weight: 600
+        }
+
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem
+        }
+
+        .access-denied {
+            text-align: center;
+            padding: 4rem 2rem
+        }
+
+        .access-denied i {
+            font-size: 4rem;
+            color: var(--danger);
+            margin-bottom: 1rem
+        }
+
+        .access-denied h2 {
+            margin-bottom: 0.5rem
+        }
+
+        .access-denied p {
+            color: var(--text-muted)
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 100;
+                transition: 0.3s
+            }
+
+            .sidebar.open {
+                transform: translateX(0)
+            }
+
+            .main-content {
+                margin-left: 0
+            }
+
+            .menu-toggle {
+                display: block !important
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            color: var(--text);
+            cursor: pointer
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast" id="toast"></div>
+
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <h1><i class="fas fa-cube"></i> DIGIFILIATE</h1>
+            <p>Sign in to access your dashboard</p>
+            <form id="loginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required
+                        placeholder="Enter your email"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required
+                        placeholder="Enter your password"></div>
+                <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+            </form>
+            <p style="margin-top:1.5rem;text-align:center;font-size:0.9rem;"><a href="digifiliate-home.html"
+                    style="color:var(--primary);"><i class="fas fa-arrow-left"></i> Back to Homepage</a></p>
+        </div>
+    </div>
+
+    <div class="app-container" id="appContainer">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo"><i class="fas fa-cube"></i> DIGIFILIATE</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i>
+                        Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" data-page="myCampaigns"><i class="fas fa-bullhorn"></i> My
+                        Campaigns</a></li>
+                <li class="nav-item admin-only"><a class="nav-link" data-page="admins"><i
+                            class="fas fa-user-shield"></i> Administrators</a></li>
+                <li class="nav-item admin-only"><a class="nav-link" data-page="users"><i class="fas fa-users"></i>
+                        Manage Users</a></li>
+                <li class="nav-item admin-only">
+                    <a class="nav-link" data-toggle="submenu"><i class="fas fa-tasks"></i> Campaign Mgmt <i
+                            class="fas fa-chevron-down" style="margin-left:auto;font-size:0.6rem;"></i></a>
+                    <ul class="submenu" id="submenu">
+                        <li><a class="nav-link" data-page="campaigns">All Campaigns</a></li>
+                        <li><a class="nav-link" data-page="assign">Assign Campaigns</a></li>
+                        <li><a class="nav-link" data-page="viewUC">User Campaigns</a></li>
+                        <li><a class="nav-link" data-page="resetCount">Set Count Zero</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item admin-only"><a class="nav-link" data-page="settings"><i class="fas fa-cog"></i>
+                        Settings</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div style="display:flex;align-items:center;gap:1rem;">
+                    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i
+                            class="fas fa-bars"></i></button>
+                    <div class="welcome">Welcome, <span id="userName">User</span><span class="role-badge"
+                            id="roleBadge">User</span></div>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon"
+                            id="themeIcon"></i></button>
+                    <button class="pwd-btn" onclick="openModal('myPwdModal')"><i class="fas fa-key"></i>
+                        Password</button>
+                    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <div class="page active" id="dashboardPage">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                </div>
+                <div class="stats-grid" id="dashStats"></div>
+            </div>
+
+            <!-- My Campaigns Page (for Users) -->
+            <div class="page" id="myCampaignsPage">
+                <div class="page-header">
+                    <h1 class="page-title">My Assigned Campaigns</h1>
+                </div>
+                <div class="campaigns-grid" id="myCampaignsGrid"></div>
+            </div>
+
+            <!-- Admin Pages -->
+            <div class="page" id="adminsPage">
+                <div class="page-header">
+                    <h1 class="page-title">Administrators</h1><button class="add-btn" onclick="openAddAdmin()"><i
+                            class="fas fa-plus"></i> Add</button>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="search-box"><i class="fas fa-search"></i><input id="adminSearch"
+                                placeholder="Search..." onkeyup="renderAdmins()"></div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTable"></tbody>
+                    </table>
+                    <div class="table-footer"><span id="adminInfo"></span>
+                        <div class="pagination" id="adminPag"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="usersPage">
+                <div class="page-header">
+                    <h1 class="page-title">Manage Users</h1><button class="add-btn" onclick="openAddUser()"><i
+                            class="fas fa-plus"></i> Add</button>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="search-box"><i class="fas fa-search"></i><input id="userSearch"
+                                placeholder="Search..." onkeyup="renderUsers()"></div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTable"></tbody>
+                    </table>
+                    <div class="table-footer"><span id="userInfo"></span>
+                        <div class="pagination" id="userPag"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="campaignsPage">
+                <div class="page-header">
+                    <h1 class="page-title">All Campaigns</h1><button class="add-btn" onclick="openAddCampaign()"><i
+                            class="fas fa-plus"></i> Add</button>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="search-box"><i class="fas fa-search"></i><input id="campSearch"
+                                placeholder="Search..." onkeyup="renderCampaigns()"></div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Offer ID</th>
+                                <th>Country</th>
+                                <th>Link</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campTable"></tbody>
+                    </table>
+                    <div class="table-footer"><span id="campInfo"></span>
+                        <div class="pagination" id="campPag"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="assignPage">
+                <div class="page-header">
+                    <h1 class="page-title">Assign Campaigns</h1>
+                </div>
+                <div class="table-container" style="padding:1.5rem;">
+                    <div class="form-group"><label>Select User</label><select id="assignUser"
+                            style="width:100%;padding:0.75rem;background:var(--bg-input);border:1px solid var(--border);border-radius:0.5rem;color:var(--text);">
+                            <option value="">Select User...</option>
+                        </select></div>
+                    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                        <button class="add-btn"
+                            style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);"
+                            onclick="checkAll(true)">Check All</button>
+                        <button class="add-btn"
+                            style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);"
+                            onclick="checkAll(false)">Uncheck All</button>
+                    </div>
+                    <div class="campaign-list" id="assignList"></div>
+                    <div class="modal-footer"><button class="btn-submit" onclick="submitAssign()">Assign
+                            Selected</button></div>
+                </div>
+            </div>
+
+            <div class="page" id="viewUCPage">
+                <div class="page-header">
+                    <h1 class="page-title">User Campaigns</h1>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Campaign</th>
+                                <th>Country</th>
+                                <th>Type</th>
+                                <th>Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ucTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="page" id="resetCountPage">
+                <div class="page-header">
+                    <h1 class="page-title">Reset Counts</h1>
+                </div>
+                <div class="table-container" style="padding:3rem;text-align:center;">
+                    <i class="fas fa-redo" style="font-size:3rem;color:var(--primary);margin-bottom:1rem;"></i>
+                    <h2>Reset All Counts to Zero</h2>
+                    <p style="color:var(--text-muted);margin:1rem 0;">This will set all campaign counts to zero.</p>
+                    <button class="add-btn" style="display:inline-flex;" onclick="resetCounts()"><i
+                            class="fas fa-check"></i> Reset All</button>
+                </div>
+            </div>
+
+            <div class="page" id="settingsPage">
+                <div class="page-header">
+                    <h1 class="page-title">Settings</h1>
+                </div>
+                <div class="settings-section">
+                    <h3><i class="fas fa-database"></i> Database Management</h3>
+                    <p style="color:var(--text-muted);margin-bottom:1rem;">Reset database to default values</p>
+                    <button class="add-btn" style="background:var(--danger);" onclick="resetDB()"><i
+                            class="fas fa-trash"></i> Reset Database</button>
+                </div>
+            </div>
+
+            <!-- Access Denied Page -->
+            <div class="page" id="accessDeniedPage">
+                <div class="access-denied">
+                    <i class="fas fa-lock"></i>
+                    <h2>Access Denied</h2>
+                    <p>You don't have permission to access this section. This feature is only available to
+                        administrators.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="adminModalTitle">Add Admin</h2><button class="modal-close"
+                    onclick="closeModal('adminModal')">&times;</button>
+            </div>
+            <input type="hidden" id="adminEditId">
+            <div class="form-group"><label>Name</label><input id="adminName" placeholder="Full name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="adminEmail" placeholder="Email address">
+            </div>
+            <div class="form-group"><label>Password</label><input type="password" id="adminPwd" placeholder="Password">
+            </div>
+            <div class="form-group"><label>Status</label><select id="adminStatus">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select></div>
+            <div class="modal-footer"><button class="btn-cancel"
+                    onclick="closeModal('adminModal')">Cancel</button><button class="btn-submit"
+                    onclick="saveAdmin()">Save</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="adminPwdModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reset Password</h2><button class="modal-close"
+                    onclick="closeModal('adminPwdModal')">&times;</button>
+            </div>
+            <input type="hidden" id="adminPwdId">
+            <div class="form-group"><label>New Password</label><input type="password" id="newAdminPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmAdminPwd"></div>
+            <div class="modal-footer"><button class="btn-cancel"
+                    onclick="closeModal('adminPwdModal')">Cancel</button><button class="btn-submit"
+                    onclick="resetAdminPwd()">Update</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="myPwdModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change My Password</h2><button class="modal-close"
+                    onclick="closeModal('myPwdModal')">&times;</button>
+            </div>
+            <div class="form-group"><label>Current Password</label><input type="password" id="currPwd"></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="myNewPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="myConfirmPwd"></div>
+            <div class="modal-footer"><button class="btn-cancel"
+                    onclick="closeModal('myPwdModal')">Cancel</button><button class="btn-submit"
+                    onclick="changeMyPwd()">Update</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="userModalTitle">Add User</h2><button class="modal-close"
+                    onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <input type="hidden" id="userEditId">
+            <div class="form-group"><label>Name</label><input id="userNameInp" placeholder="Full name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="userEmail" placeholder="Email address">
+            </div>
+            <div class="form-group"><label>Password</label><input type="password" id="userPwd" placeholder="Password">
+            </div>
+            <div class="form-group"><label>Status</label><select id="userStatus">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select></div>
+            <div class="form-group"><label>Type</label><select id="userType">
+                    <option value="Punch">Punch</option>
+                    <option value="Click">Click</option>
+                </select></div>
+            <div class="modal-footer"><button class="btn-cancel"
+                    onclick="closeModal('userModal')">Cancel</button><button class="btn-submit"
+                    onclick="saveUser()">Save</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="userPwdModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reset Password</h2><button class="modal-close" onclick="closeModal('userPwdModal')">&times;</button>
+            </div>
+            <input type="hidden" id="userPwdId">
+            <div class="form-group"><label>New Password</label><input type="password" id="newUserPwd"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmUserPwd"></div>
+            <div class="modal-footer"><button class="btn-cancel"
+                    onclick="closeModal('userPwdModal')">Cancel</button><button class="btn-submit"
+                    onclick="resetUserPwd()">Update</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="campModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="campModalTitle">Add Campaign</h2><button class="modal-close"
+                    onclick="closeModal('campModal')">&times;</button>
+            </div>
+            <input type="hidden" id="campEditId">
+            <div class="form-group"><label>Name</label><input id="campName" placeholder="Campaign name"></div>
+            <div class="form-group"><label>Offer ID</label><input id="campOffer" placeholder="Offer ID"></div>
+            <div class="form-group"><label>Country</label><select id="campCountry"></select></div>
+            <div class="form-group"><label>Link</label><input id="campLink" placeholder="https://"></div>
+            <div class="form-group"><label>Type</label><select id="campType">
+                    <option value="Click">Click</option>
+                    <option value="Punch">Punch</option>
+                </select></div>
+            <div class="modal-footer"><button class="btn-cancel"
+                    onclick="closeModal('campModal')">Cancel</button><button class="btn-submit"
+                    onclick="saveCampaign()">Save</button></div>
+        </div>
+    </div>
+
+    <script>
+        const COUNTRIES = ["Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh", "Belgium", "Brazil", "Canada", "Chile", "China", "Colombia", "Croatia", "Czech Republic", "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hong Kong", "Hungary", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Kenya", "Kuwait", "Malaysia", "Mexico", "Morocco", "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Singapore", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "UAE", "UK", "Ukraine", "USA", "Vietnam"];
+
+        const DEFAULT_DB = {
+            admins: [{ id: 1, name: 'Rakesh Kumar', email: 'rakesh@admin.com', password: 'admin123', status: 'Active' }],
+            users: [{ id: 1, name: 'John Doe', email: 'john@user.com', password: 'user123', status: 'Active', type: 'Punch' }, { id: 2, name: 'Jane Smith', email: 'jane@user.com', password: 'user123', status: 'Active', type: 'Click' }],
+            campaigns: [{ id: 1, name: 'Summer Sale', offerId: 'OFF001', country: 'USA', link: 'https://example.com/summer', created: '2024-01-15', type: 'Click' }, { id: 2, name: 'Winter Deals', offerId: 'OFF002', country: 'UK', link: 'https://example.com/winter', created: '2024-01-20', type: 'Punch' }],
+            userCampaigns: [{ id: 1, visibleId: 1, userId: 1, campaignId: 1, count: 150 }, { id: 2, visibleId: 2, userId: 1, campaignId: 2, count: 89 }]
+        };
+
+        function getDB() { const s = localStorage.getItem('digifiliate_db'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB)); }
+        function saveDB() { localStorage.setItem('digifiliate_db', JSON.stringify(db)); }
+        function resetDB() { if (confirm('Reset all data? This will log you out.')) { localStorage.removeItem('digifiliate_db'); localStorage.removeItem('digifiliate_session'); location.reload(); } }
+
+        let db = getDB();
+        let currentUser = null;
+        let isAdmin = false;
+        let page = { admins: 1, users: 1, camps: 1 };
+
+        // Init country dropdown
+        document.getElementById('campCountry').innerHTML = COUNTRIES.map(c => `<option value="${c}">${c}</option>`).join('');
+
+        // Toast & Modal
+        function toast(msg, type = 'success') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (type === 'error' ? ' error' : type === 'warning' ? ' warning' : ''); setTimeout(() => t.className = 'toast', 3000); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // Session Management
+        function saveSession() {
+            const session = { userId: currentUser.id, isAdmin: isAdmin, timestamp: Date.now() };
+            localStorage.setItem('digifiliate_session', JSON.stringify(session));
+        }
+        function loadSession() {
+            const s = localStorage.getItem('digifiliate_session');
+            if (!s) return false;
+            const session = JSON.parse(s);
+            // Session expires in 24 hours
+            if (Date.now() - session.timestamp > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem('digifiliate_session');
+                return false;
+            }
+            db = getDB();
+            if (session.isAdmin) {
+                currentUser = db.admins.find(a => a.id === session.userId && a.status === 'Active');
+                isAdmin = true;
+            } else {
+                currentUser = db.users.find(u => u.id === session.userId && u.status === 'Active');
+                isAdmin = false;
+            }
+            if (!currentUser) {
+                localStorage.removeItem('digifiliate_session');
+                return false;
+            }
+            return true;
+        }
+        function clearSession() { localStorage.removeItem('digifiliate_session'); }
+
+        // Auth
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            db = getDB();
+            const email = document.getElementById('loginEmail').value;
+            const pwd = document.getElementById('loginPassword').value;
+
+            // Check admins first
+            let user = db.admins.find(a => a.email === email && a.password === pwd && a.status === 'Active');
+            if (user) {
+                currentUser = user;
+                isAdmin = true;
+            } else {
+                // Check users
+                user = db.users.find(u => u.email === email && u.password === pwd && u.status === 'Active');
+                if (user) {
+                    currentUser = user;
+                    isAdmin = false;
+                }
+            }
+
+            if (currentUser) {
+                saveSession();
+                showDashboard();
+            } else {
+                toast('Invalid credentials or account inactive!', 'error');
+            }
+        });
+
+        function showDashboard() {
+            document.getElementById('userName').textContent = currentUser.name.split(' ')[0];
+            const badge = document.getElementById('roleBadge');
+            badge.textContent = isAdmin ? 'Admin' : 'User';
+            badge.className = 'role-badge ' + (isAdmin ? 'admin' : 'user');
+
+            // Show/hide admin menu items
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = isAdmin ? 'block' : 'none';
+            });
+
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            updateStats();
+            renderAll();
+        }
+
+        function logout() {
+            currentUser = null;
+            isAdmin = false;
+            clearSession();
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Navigation with access control
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function () {
+                if (this.dataset.toggle === 'submenu') {
+                    document.getElementById('submenu').classList.toggle('open');
+                    return;
+                }
+                if (this.dataset.page) {
+                    const pageName = this.dataset.page;
+                    const adminPages = ['admins', 'users', 'campaigns', 'assign', 'viewUC', 'resetCount', 'settings'];
+
+                    if (adminPages.includes(pageName) && !isAdmin) {
+                        // Show access denied
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                        document.getElementById('accessDeniedPage').classList.add('active');
+                        toast('Admin access required!', 'warning');
+                        return;
+                    }
+
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.getElementById(pageName + 'Page').classList.add('active');
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+
+        // Stats
+        function updateStats() {
+            const statsHtml = isAdmin ? `
+                <div class="stat-card"><h3><i class="fas fa-user-shield"></i> Admins</h3><div class="value">${db.admins.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-users"></i> Users</h3><div class="value">${db.users.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> Campaigns</h3><div class="value">${db.campaigns.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Click Type</h3><div class="value">${db.campaigns.filter(c => c.type === 'Click').length}</div></div>
+            ` : `
+                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> My Campaigns</h3><div class="value">${db.userCampaigns.filter(uc => uc.userId === currentUser.id).length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Total Clicks</h3><div class="value">${db.userCampaigns.filter(uc => uc.userId === currentUser.id).reduce((s, uc) => s + uc.count, 0)}</div></div>
+            `;
+            document.getElementById('dashStats').innerHTML = statsHtml;
+        }
+
+        // My Campaigns (User view)
+        function renderMyCampaigns() {
+            const userCamps = db.userCampaigns.filter(uc => uc.userId === currentUser.id);
+            const campaigns = userCamps.map(uc => {
+                const camp = db.campaigns.find(c => c.id === uc.campaignId);
+                return camp ? { ...camp, count: uc.count, ucId: uc.id } : null;
+            }).filter(Boolean);
+
+            document.getElementById('myCampaignsGrid').innerHTML = campaigns.length ? campaigns.map(c => `
+                <div class="campaign-card">
+                    <h3><i class="fas fa-bullhorn"></i> ${c.name}</h3>
+                    <p><strong>Offer ID:</strong> ${c.offerId}</p>
+                    <p><strong>Country:</strong> ${c.country}</p>
+                    <p><strong>Type:</strong> <span class="status ${c.type.toLowerCase()}">${c.type}</span></p>
+                    <p><strong>Link:</strong> <a href="${c.link}" target="_blank">${c.link}</a></p>
+                    <div class="count"><i class="fas fa-mouse-pointer"></i> ${c.count} Clicks</div>
+                </div>
+            `).join('') : '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:2rem;">No campaigns assigned yet. Please contact your administrator.</p>';
+        }
+
+        // Render Tables
+        function renderTable(data, tableId, infoId, pagId, key, rowFn) {
+            const search = (document.getElementById(tableId.replace('Table', 'Search')) || {}).value?.toLowerCase() || '';
+            const filtered = data.filter(i => JSON.stringify(i).toLowerCase().includes(search));
+            const perPage = 10, totalPages = Math.ceil(filtered.length / perPage) || 1;
+            page[key] = Math.min(page[key], totalPages);
+            const start = (page[key] - 1) * perPage;
+            const items = filtered.slice(start, start + perPage);
+            document.getElementById(tableId).innerHTML = items.length ? items.map(rowFn).join('') : '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
+            document.getElementById(infoId).textContent = `${filtered.length ? start + 1 : 0}-${Math.min(start + perPage, filtered.length)} of ${filtered.length}`;
+            let html = `<button onclick="goPage('${key}',-1)" ${page[key] === 1 ? 'disabled' : ''}>‹</button>`;
+            for (let i = 1; i <= totalPages; i++)html += `<button class="${i === page[key] ? 'active' : ''}" onclick="goPage('${key}',${i},true)">${i}</button>`;
+            html += `<button onclick="goPage('${key}',1)" ${page[key] === totalPages ? 'disabled' : ''}>›</button>`;
+            document.getElementById(pagId).innerHTML = html;
+        }
+        function goPage(k, v, abs = false) { page[k] = abs ? v : page[k] + v; renderAll(); }
+
+        function renderAdmins() {
+            renderTable(db.admins, 'adminTable', 'adminInfo', 'adminPag', 'admins', a => `<tr><td>${a.name}</td><td>${a.email}</td><td><span class="status ${a.status.toLowerCase()}">${a.status}</span></td><td class="actions"><button class="action-btn edit" onclick="editAdmin(${a.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openAdminPwd(${a.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delAdmin(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+        }
+        function renderUsers() {
+            renderTable(db.users, 'userTable', 'userInfo', 'userPag', 'users', u => `<tr><td>${u.name}</td><td>${u.email}</td><td><span class="status ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.type}</td><td class="actions"><button class="action-btn edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openUserPwd(${u.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delUser(${u.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+        }
+        function renderCampaigns() {
+            renderTable(db.campaigns, 'campTable', 'campInfo', 'campPag', 'camps', c => `<tr><td>${c.name}</td><td>${c.offerId}</td><td>${c.country}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary)">${c.link.substring(0, 30)}...</a></td><td><span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></td><td class="actions"><button class="action-btn edit" onclick="editCamp(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="delCamp(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+        }
+        function renderUC() {
+            document.getElementById('ucTable').innerHTML = db.userCampaigns.length ? db.userCampaigns.map(uc => {
+                const u = db.users.find(x => x.id === uc.userId);
+                const c = db.campaigns.find(x => x.id === uc.campaignId);
+                return `<tr><td>${u?.name || '<em>Deleted</em>'}</td><td>${c?.name || '<em>Deleted</em>'}</td><td>${c?.country || '-'}</td><td><span class="status ${(c?.type || 'click').toLowerCase()}">${c?.type || 'Click'}</span></td><td>${uc.count}</td><td class="actions"><button class="action-btn delete" onclick="delUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('') : '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">No assignments</td></tr>';
+        }
+        function renderAssign() {
+            document.getElementById('assignUser').innerHTML = '<option value="">Select User...</option>' + db.users.filter(u => u.status === 'Active').map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+            document.getElementById('assignList').innerHTML = db.campaigns.length ? db.campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="ac_${c.id}" value="${c.id}"><label for="ac_${c.id}">${c.name} - ${c.country} <span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></label></div>`).join('') : '<p style="padding:1rem;color:var(--text-muted);">No campaigns available</p>';
+        }
+        function renderAll() { renderAdmins(); renderUsers(); renderCampaigns(); renderUC(); renderAssign(); renderMyCampaigns(); }
+
+        // CRUD Admins
+        function openAddAdmin() { document.getElementById('adminEditId').value = ''; document.getElementById('adminName').value = ''; document.getElementById('adminEmail').value = ''; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = 'Active'; document.getElementById('adminModalTitle').textContent = 'Add Admin'; openModal('adminModal'); }
+        function editAdmin(id) { const a = db.admins.find(x => x.id === id); document.getElementById('adminEditId').value = id; document.getElementById('adminName').value = a.name; document.getElementById('adminEmail').value = a.email; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = a.status; document.getElementById('adminModalTitle').textContent = 'Edit Admin'; openModal('adminModal'); }
+        function saveAdmin() {
+            const id = document.getElementById('adminEditId').value;
+            const data = { name: document.getElementById('adminName').value, email: document.getElementById('adminEmail').value, status: document.getElementById('adminStatus').value };
+            const pwd = document.getElementById('adminPwd').value;
+            if (!data.name || !data.email) return toast('Fill all fields', 'error');
+            if (id) { const a = db.admins.find(x => x.id == id); Object.assign(a, data); if (pwd) a.password = pwd; }
+            else { if (!pwd) return toast('Password required', 'error'); db.admins.push({ id: Date.now(), ...data, password: pwd }); }
+            saveDB(); closeModal('adminModal'); updateStats(); renderAdmins(); toast('Saved!');
+        }
+        function delAdmin(id) { if (db.admins.length === 1) return toast('Cannot delete last admin', 'error'); if (confirm('Delete this admin?')) { db.admins = db.admins.filter(a => a.id !== id); saveDB(); updateStats(); renderAdmins(); toast('Deleted!'); } }
+        function openAdminPwd(id) { document.getElementById('adminPwdId').value = id; document.getElementById('newAdminPwd').value = ''; document.getElementById('confirmAdminPwd').value = ''; openModal('adminPwdModal'); }
+        function resetAdminPwd() { const id = document.getElementById('adminPwdId').value; const p = document.getElementById('newAdminPwd').value; const c = document.getElementById('confirmAdminPwd').value; if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); db.admins.find(a => a.id == id).password = p; saveDB(); closeModal('adminPwdModal'); toast('Password updated!'); }
+        function changeMyPwd() { const curr = document.getElementById('currPwd').value; const p = document.getElementById('myNewPwd').value; const c = document.getElementById('myConfirmPwd').value; if (currentUser.password !== curr) return toast('Wrong current password', 'error'); if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); currentUser.password = p; if (isAdmin) { db.admins.find(a => a.id === currentUser.id).password = p; } else { db.users.find(u => u.id === currentUser.id).password = p; } saveDB(); closeModal('myPwdModal'); toast('Password changed!'); }
+
+        // CRUD Users
+        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInp').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = 'Active'; document.getElementById('userType').value = 'Punch'; document.getElementById('userModalTitle').textContent = 'Add User'; openModal('userModal'); }
+        function editUser(id) { const u = db.users.find(x => x.id === id); document.getElementById('userEditId').value = id; document.getElementById('userNameInp').value = u.name; document.getElementById('userEmail').value = u.email; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = u.status; document.getElementById('userType').value = u.type; document.getElementById('userModalTitle').textContent = 'Edit User'; openModal('userModal'); }
+        function saveUser() {
+            const id = document.getElementById('userEditId').value;
+            const data = { name: document.getElementById('userNameInp').value, email: document.getElementById('userEmail').value, status: document.getElementById('userStatus').value, type: document.getElementById('userType').value };
+            const pwd = document.getElementById('userPwd').value;
+            if (!data.name || !data.email) return toast('Fill all fields', 'error');
+            if (id) { const u = db.users.find(x => x.id == id); Object.assign(u, data); if (pwd) u.password = pwd; }
+            else { if (!pwd) return toast('Password required', 'error'); db.users.push({ id: Date.now(), ...data, password: pwd }); }
+            saveDB(); closeModal('userModal'); updateStats(); renderAll(); toast('Saved!');
+        }
+        function delUser(id) { if (confirm('Delete this user?')) { db.users = db.users.filter(u => u.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.userId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
+        function openUserPwd(id) { document.getElementById('userPwdId').value = id; document.getElementById('newUserPwd').value = ''; document.getElementById('confirmUserPwd').value = ''; openModal('userPwdModal'); }
+        function resetUserPwd() { const id = document.getElementById('userPwdId').value; const p = document.getElementById('newUserPwd').value; const c = document.getElementById('confirmUserPwd').value; if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); db.users.find(u => u.id == id).password = p; saveDB(); closeModal('userPwdModal'); toast('Password updated!'); }
+
+        // CRUD Campaigns
+        function openAddCampaign() { document.getElementById('campEditId').value = ''; document.getElementById('campName').value = ''; document.getElementById('campOffer').value = ''; document.getElementById('campLink').value = ''; document.getElementById('campType').value = 'Click'; document.getElementById('campModalTitle').textContent = 'Add Campaign'; openModal('campModal'); }
+        function editCamp(id) { const c = db.campaigns.find(x => x.id === id); document.getElementById('campEditId').value = id; document.getElementById('campName').value = c.name; document.getElementById('campOffer').value = c.offerId; document.getElementById('campCountry').value = c.country; document.getElementById('campLink').value = c.link; document.getElementById('campType').value = c.type || 'Click'; document.getElementById('campModalTitle').textContent = 'Edit Campaign'; openModal('campModal'); }
+        function saveCampaign() {
+            const id = document.getElementById('campEditId').value;
+            const data = { name: document.getElementById('campName').value, offerId: document.getElementById('campOffer').value, country: document.getElementById('campCountry').value, link: document.getElementById('campLink').value, type: document.getElementById('campType').value, created: new Date().toISOString().split('T')[0] };
+            if (!data.name) return toast('Name required', 'error');
+            if (id) { const c = db.campaigns.find(x => x.id == id); Object.assign(c, data); }
+            else { db.campaigns.push({ id: Date.now(), ...data }); }
+            saveDB(); closeModal('campModal'); updateStats(); renderAll(); toast('Saved!');
+        }
+        function delCamp(id) { if (confirm('Delete this campaign?')) { db.campaigns = db.campaigns.filter(c => c.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.campaignId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
+
+        // Assign & Reset
+        function checkAll(v) { document.querySelectorAll('#assignList input').forEach(cb => cb.checked = v); }
+        function submitAssign() {
+            const userId = parseInt(document.getElementById('assignUser').value);
+            if (!userId) return toast('Select a user first', 'error');
+            const checked = document.querySelectorAll('#assignList input:checked');
+            if (!checked.length) return toast('Select at least one campaign', 'error');
+            let added = 0;
+            checked.forEach(cb => {
+                const cid = parseInt(cb.value);
+                if (!db.userCampaigns.find(uc => uc.userId === userId && uc.campaignId === cid)) {
+                    db.userCampaigns.push({ id: Date.now() + Math.random(), userId: userId, campaignId: cid, count: 0 });
+                    added++;
+                }
+            });
+            saveDB(); renderAll();
+            if (added > 0) toast(`${added} campaign(s) assigned!`);
+            else toast('Campaigns already assigned', 'warning');
+        }
+        function delUC(id) { if (confirm('Remove this assignment?')) { db.userCampaigns = db.userCampaigns.filter(uc => uc.id !== id); saveDB(); renderAll(); toast('Removed!'); } }
+        function resetCounts() { if (confirm('Reset all counts to zero?')) { db.userCampaigns.forEach(uc => uc.count = 0); saveDB(); renderAll(); toast('All counts reset!'); } }
+
+        // Theme
+        function toggleTheme() {
+            const b = document.body, i = document.getElementById('themeIcon');
+            if (b.getAttribute('data-theme') === 'light') { b.removeAttribute('data-theme'); i.className = 'fas fa-moon'; localStorage.setItem('theme', 'dark'); }
+            else { b.setAttribute('data-theme', 'light'); i.className = 'fas fa-sun'; localStorage.setItem('theme', 'light'); }
+        }
+        if (localStorage.getItem('theme') === 'light') { document.body.setAttribute('data-theme', 'light'); document.getElementById('themeIcon').className = 'fas fa-sun'; }
+
+        // Check session on load
+        if (loadSession()) {
+            showDashboard();
+        }
+
+        renderAll();
+    </script>
+</body>
+
+</html>
