@@ -697,8 +697,13 @@
                         placeholder="Enter your password"></div>
                 <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
             </form>
-            <p style="margin-top:1.5rem;text-align:center;font-size:0.9rem;"><a href="index.html"
-                    style="color:var(--primary);"><i class="fas fa-arrow-left"></i> Back to Homepage</a></p>
+            <p style="margin-top:1.5rem;text-align:center;font-size:0.9rem;">
+                <a href="index.html" style="color:var(--primary);margin-right:1rem;"><i class="fas fa-arrow-left"></i>
+                    Homepage</a>
+                <span style="color:var(--border)">|</span>
+                <a href="#" onclick="resetDB()" style="color:var(--text-muted);margin-left:1rem;font-size:0.8rem;"><i
+                        class="fas fa-trash-alt"></i> Reset Database</a>
+            </p>
         </div>
     </div>
 
@@ -1106,16 +1111,29 @@
             const pwd = document.getElementById('loginPassword').value;
 
             // Check admins first
-            let user = db.admins.find(a => a.email === email && a.password === pwd && a.status === 'Active');
+            let user = db.admins.find(a => a.email === email && a.password === pwd);
             if (user) {
-                currentUser = user;
-                isAdmin = true;
+                // Legacy data migration: if status is missing, assume Active
+                if (!user.status) { user.status = 'Active'; saveDB(); }
+
+                if (user.status === 'Active') {
+                    currentUser = user;
+                    isAdmin = true;
+                } else {
+                    return toast('Account is inactive. Contact support.', 'error');
+                }
             } else {
                 // Check users
-                user = db.users.find(u => u.email === email && u.password === pwd && u.status === 'Active');
+                user = db.users.find(u => u.email === email && u.password === pwd);
                 if (user) {
-                    currentUser = user;
-                    isAdmin = false;
+                    if (!user.status) { user.status = 'Active'; saveDB(); }
+
+                    if (user.status === 'Active') {
+                        currentUser = user;
+                        isAdmin = false;
+                    } else {
+                        return toast('Account is inactive. Contact support.', 'error');
+                    }
                 }
             }
 
