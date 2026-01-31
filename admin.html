@@ -11,13 +11,11 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         :root {
             --primary: #D32F2F;
-            --primary-dark: #B71C1C;
-            --secondary: #FF5252;
             --bg-dark: #1a1a2e;
             --bg-card: #16213e;
             --bg-input: #0f3460;
@@ -25,7 +23,16 @@
             --text-muted: #94a3b8;
             --success: #22c55e;
             --danger: #ef4444;
-            --border: #334155;
+            --border: #334155
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1
         }
 
         body {
@@ -33,96 +40,87 @@
             background: var(--bg-dark);
             color: var(--text);
             min-height: 100vh;
+            transition: all 0.3s
         }
 
         .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh
         }
 
         .login-box {
             background: var(--bg-card);
             padding: 3rem;
             border-radius: 1.5rem;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 420px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border)
         }
 
         .login-box h1 {
             text-align: center;
-            margin-bottom: 0.5rem;
             color: var(--primary);
             font-size: 2rem;
+            margin-bottom: 0.5rem
         }
 
-        .login-box p {
+        .login-box>p {
             text-align: center;
             color: var(--text-muted);
-            margin-bottom: 2rem;
+            margin-bottom: 2rem
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.5rem
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-muted);
+            color: var(--text-muted)
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 0.875rem 1rem;
+            padding: 0.875rem;
             background: var(--bg-input);
             border: 1px solid var(--border);
             border-radius: 0.75rem;
             color: var(--text);
-            font-size: 1rem;
-            transition: all 0.3s;
+            font-size: 1rem
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.2);
+            border-color: var(--primary)
         }
 
         .btn {
             width: 100%;
             padding: 0.875rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             border: none;
             border-radius: 0.75rem;
             color: white;
             font-size: 1rem;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
+            cursor: pointer
         }
 
         .app-container {
-            display: none;
+            display: none
         }
 
         .app-container.active {
-            display: flex;
+            display: flex
         }
 
         .sidebar {
-            width: 280px;
+            width: 260px;
             background: var(--bg-card);
             min-height: 100vh;
             padding: 1.5rem;
@@ -130,29 +128,23 @@
             position: fixed;
             left: 0;
             top: 0;
-            overflow-y: auto;
+            overflow-y: auto
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
             padding: 1rem;
             margin-bottom: 2rem;
-        }
-
-        .logo span {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--primary);
+            color: var(--primary)
         }
 
         .nav-menu {
-            list-style: none;
+            list-style: none
         }
 
         .nav-item {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.5rem
         }
 
         .nav-link {
@@ -161,39 +153,34 @@
             gap: 0.75rem;
             padding: 0.875rem 1rem;
             color: var(--text-muted);
-            text-decoration: none;
             border-radius: 0.75rem;
-            transition: all 0.3s;
             cursor: pointer;
+            transition: all 0.3s
         }
 
         .nav-link:hover,
         .nav-link.active {
             background: rgba(211, 47, 47, 0.2);
-            color: var(--text);
-        }
-
-        .nav-link.active {
-            border-left: 3px solid var(--primary);
+            color: var(--text)
         }
 
         .submenu {
             list-style: none;
-            margin-left: 2rem;
+            margin-left: 1.5rem;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s;
+            transition: max-height 0.3s
         }
 
         .submenu.open {
-            max-height: 250px;
+            max-height: 200px
         }
 
         .main-content {
-            margin-left: 280px;
+            margin-left: 260px;
             flex: 1;
             padding: 2rem;
-            min-height: 100vh;
+            min-height: 100vh
         }
 
         .header {
@@ -201,81 +188,61 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1rem
         }
 
         .welcome {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 600
         }
 
         .welcome span {
-            color: var(--primary);
+            color: var(--primary)
         }
 
         .header-actions {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap
         }
 
         .header-actions button {
-            padding: 0.625rem 1rem;
+            padding: 0.5rem 1rem;
             border: none;
             border-radius: 0.5rem;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.875rem
         }
 
-        .change-pwd-btn {
+        .theme-btn {
             background: var(--bg-input);
             color: var(--text);
-            border: 1px solid var(--border) !important;
+            border: 1px solid var(--border) !important
+        }
+
+        .pwd-btn {
+            background: var(--bg-input);
+            color: var(--text);
+            border: 1px solid var(--border) !important
         }
 
         .logout-btn {
             background: var(--danger);
-            color: white;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            border: 1px solid var(--border);
-        }
-
-        .stat-card h3 {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card .value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
+            color: white
         }
 
         .page {
-            display: none;
+            display: none
         }
 
         .page.active {
-            display: block;
+            display: block
         }
 
         .page-header {
@@ -284,29 +251,55 @@
             align-items: center;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1rem
         }
 
         .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 600
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border)
+        }
+
+        .stat-card h3 {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary)
         }
 
         .table-container {
             background: var(--bg-card);
             border-radius: 1rem;
             border: 1px solid var(--border);
-            overflow: hidden;
+            overflow: hidden
         }
 
         .table-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1rem
         }
 
         .search-box {
@@ -315,7 +308,7 @@
             gap: 0.5rem;
             background: var(--bg-input);
             padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
+            border-radius: 0.5rem
         }
 
         .search-box input {
@@ -323,127 +316,122 @@
             border: none;
             color: var(--text);
             outline: none;
-            width: 180px;
+            width: 150px
         }
 
         .add-btn {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.5rem 1rem;
+            background: var(--primary);
             border: none;
             border-radius: 0.5rem;
             color: white;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .add-btn:hover {
-            transform: translateY(-2px);
+            font-weight: 500
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse
         }
 
         th,
         td {
-            padding: 1rem 1.5rem;
+            padding: 0.875rem 1rem;
             text-align: left;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border)
         }
 
         th {
             background: var(--bg-input);
             color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
+            font-size: 0.75rem;
+            text-transform: uppercase
         }
 
         .status {
-            padding: 0.25rem 0.75rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 600
         }
 
         .status.active {
             background: rgba(34, 197, 94, 0.2);
-            color: var(--success);
+            color: var(--success)
         }
 
         .status.inactive {
             background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
+            color: var(--danger)
+        }
+
+        .status.click {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6
+        }
+
+        .status.punch {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b
         }
 
         .actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.25rem
         }
 
         .action-btn {
-            padding: 0.5rem;
+            padding: 0.4rem;
             border: none;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            border-radius: 0.25rem;
+            cursor: pointer
         }
 
         .action-btn.edit {
             background: rgba(211, 47, 47, 0.2);
-            color: var(--primary);
+            color: var(--primary)
         }
 
         .action-btn.delete {
             background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
+            color: var(--danger)
         }
 
         .action-btn.key {
             background: rgba(34, 197, 94, 0.2);
-            color: var(--success);
+            color: var(--success)
         }
 
         .table-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .entries-selector select {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            color: var(--text);
+            gap: 1rem
         }
 
         .pagination {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.25rem
         }
 
         .pagination button {
-            padding: 0.5rem 0.875rem;
+            padding: 0.4rem 0.75rem;
             background: var(--bg-input);
             border: 1px solid var(--border);
-            border-radius: 0.375rem;
+            border-radius: 0.25rem;
             color: var(--text);
             cursor: pointer;
+            font-size: 0.8rem
         }
 
-        .pagination button:hover,
         .pagination button.active {
             background: var(--primary);
-            border-color: var(--primary);
+            border-color: var(--primary)
         }
 
         .modal {
@@ -456,11 +444,11 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: 1000;
             justify-content: center;
-            align-items: center;
+            align-items: center
         }
 
         .modal.active {
-            display: flex;
+            display: flex
         }
 
         .modal-content {
@@ -468,17 +456,17 @@
             padding: 2rem;
             border-radius: 1rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             border: 1px solid var(--border);
             max-height: 90vh;
-            overflow-y: auto;
+            overflow-y: auto
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.5rem
         }
 
         .modal-close {
@@ -486,32 +474,32 @@
             border: none;
             color: var(--text-muted);
             font-size: 1.5rem;
-            cursor: pointer;
+            cursor: pointer
         }
 
         .modal-footer {
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 1.5rem
         }
 
         .btn-cancel {
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 0.625rem 1.5rem;
+            padding: 0.5rem 1.25rem;
             border-radius: 0.5rem;
-            cursor: pointer;
+            cursor: pointer
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             border: none;
             color: white;
-            padding: 0.625rem 1.5rem;
+            padding: 0.5rem 1.25rem;
             border-radius: 0.5rem;
-            cursor: pointer;
+            cursor: pointer
         }
 
         .toast {
@@ -523,22 +511,15 @@
             color: white;
             border-radius: 0.5rem;
             display: none;
-            z-index: 1001;
+            z-index: 1001
         }
 
         .toast.show {
-            display: block;
-            animation: slideIn 0.3s;
+            display: block
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-            }
-
-            to {
-                transform: translateX(0);
-            }
+        .toast.error {
+            background: var(--danger)
         }
 
         .settings-section {
@@ -546,144 +527,53 @@
             padding: 1.5rem;
             border-radius: 1rem;
             border: 1px solid var(--border);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem
         }
 
         .settings-section h3 {
             margin-bottom: 1rem;
-        }
-
-        .file-upload {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
-        .file-upload label {
-            padding: 0.625rem 1.25rem;
-            background: var(--bg-input);
-            border: 1px dashed var(--border);
-            border-radius: 0.5rem;
-            cursor: pointer;
-        }
-
-        .file-preview {
-            width: 50px;
-            height: 50px;
-            background: var(--bg-input);
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .file-preview img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        .editor-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.25rem;
-            padding: 0.5rem;
-            background: var(--bg-input);
-            border-radius: 0.5rem 0.5rem 0 0;
-            border: 1px solid var(--border);
-        }
-
-        .editor-toolbar button {
-            padding: 0.5rem 0.75rem;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 0.25rem;
-        }
-
-        .editor-toolbar button:hover {
-            background: var(--bg-dark);
-            color: var(--text);
-        }
-
-        .editor-content {
-            min-height: 150px;
-            padding: 1rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-top: none;
-            border-radius: 0 0 0.5rem 0.5rem;
+            font-size: 1rem
         }
 
         .campaign-list {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
             background: var(--bg-input);
             border-radius: 0.5rem;
-            padding: 1rem;
+            padding: 0.5rem
         }
 
         .campaign-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border);
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border)
         }
 
-        .campaign-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
+        .campaign-item input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary)
         }
 
-        .user-select {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            color: var(--text);
-            margin-bottom: 1rem;
-        }
-
-        .bulk-actions {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .bulk-actions button {
-            padding: 0.5rem 1rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            color: var(--text);
-            cursor: pointer;
-        }
-
-        @media (max-width: 900px) {
+        @media(max-width:900px) {
             .sidebar {
                 transform: translateX(-100%);
                 z-index: 100;
-                transition: 0.3s;
+                transition: 0.3s
             }
 
             .sidebar.open {
-                transform: translateX(0);
+                transform: translateX(0)
             }
 
             .main-content {
-                margin-left: 0;
+                margin-left: 0
             }
 
             .menu-toggle {
-                display: block !important;
+                display: block !important
             }
         }
 
@@ -691,37 +581,34 @@
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            padding: 0.5rem 0.75rem;
+            padding: 0.5rem;
             border-radius: 0.5rem;
             color: var(--text);
-            cursor: pointer;
+            cursor: pointer
         }
     </style>
 </head>
 
 <body>
     <div class="toast" id="toast"></div>
-
     <div class="login-container" id="loginPage">
         <div class="login-box">
-            <h1><i class="fas fa-shield-halved"></i> DIGIFILIATE</h1>
-            <p>Admin Portal - Sign in to continue</p>
+            <h1><i class="fas fa-shield-halved"></i> Admin Portal</h1>
+            <p>Sign in to manage your platform</p>
             <form id="loginForm">
-                <div class="form-group"><label>Email</label><input type="email" id="loginEmail"
-                        placeholder="admin@digifiliate.com" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPassword"
-                        placeholder="••••••••" required></div>
-                <button type="submit" class="btn">Sign In <i class="fas fa-arrow-right"></i></button>
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+                <button type="submit" class="btn">Sign In</button>
             </form>
-            <p style="margin-top:1.5rem;text-align:center;"><a href="home.html" style="color:var(--primary);">← Back to
-                    Homepage</a></p>
+            <p style="margin-top:1.5rem;text-align:center;font-size:0.9rem;"><a href="home.html"
+                    style="color:var(--primary);">← Homepage</a> | <a href="user.html"
+                    style="color:var(--primary);">User Portal →</a></p>
         </div>
     </div>
 
     <div class="app-container" id="appContainer">
         <aside class="sidebar" id="sidebar">
-            <div class="logo"><i class="fas fa-cube"
-                    style="color:var(--primary);font-size:1.5rem;"></i><span>DIGIFILIATE</span></div>
+            <div class="logo"><i class="fas fa-cube"></i> DIGIFILIATE</div>
             <ul class="nav-menu">
                 <li class="nav-item"><a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i>
                         Dashboard</a></li>
@@ -731,11 +618,11 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="submenu"><i class="fas fa-bullhorn"></i> Campaigns <i
-                            class="fas fa-chevron-down" style="margin-left:auto;font-size:0.7rem;"></i></a>
-                    <ul class="submenu" id="campaignSubmenu">
-                        <li><a class="nav-link" data-page="allCampaigns">All Campaigns</a></li>
-                        <li><a class="nav-link" data-page="assignCampaigns">Assign Campaigns</a></li>
-                        <li><a class="nav-link" data-page="userCampaigns">User Campaigns</a></li>
+                            class="fas fa-chevron-down" style="margin-left:auto;font-size:0.6rem;"></i></a>
+                    <ul class="submenu" id="submenu">
+                        <li><a class="nav-link" data-page="campaigns">All Campaigns</a></li>
+                        <li><a class="nav-link" data-page="assign">Assign Campaigns</a></li>
+                        <li><a class="nav-link" data-page="viewUC">User Campaigns</a></li>
                         <li><a class="nav-link" data-page="resetCount">Set Count Zero</a></li>
                     </ul>
                 </li>
@@ -743,7 +630,6 @@
                 </li>
             </ul>
         </aside>
-
         <main class="main-content">
             <header class="header">
                 <div style="display:flex;align-items:center;gap:1rem;">
@@ -752,51 +638,46 @@
                     <div class="welcome">Welcome, <span id="userName">Admin</span></div>
                 </div>
                 <div class="header-actions">
-                    <button class="change-pwd-btn" onclick="openModal('changeAdminPwdModal')"><i class="fas fa-key"></i>
-                        Change Password</button>
+                    <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon"
+                            id="themeIcon"></i></button>
+                    <button class="pwd-btn" onclick="openModal('myPwdModal')"><i class="fas fa-key"></i>
+                        Password</button>
                     <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </header>
 
-            <!-- Dashboard -->
             <div class="page active" id="dashboardPage">
                 <div class="page-header">
                     <h1 class="page-title">Dashboard</h1>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3><i class="fas fa-user-shield"></i> Total Admins</h3>
-                        <div class="value" id="totalAdmins">0</div>
+                        <h3>Admins</h3>
+                        <div class="value" id="sAdmins">0</div>
                     </div>
                     <div class="stat-card">
-                        <h3><i class="fas fa-users"></i> Total Users</h3>
-                        <div class="value" id="totalUsers">0</div>
+                        <h3>Users</h3>
+                        <div class="value" id="sUsers">0</div>
                     </div>
                     <div class="stat-card">
-                        <h3><i class="fas fa-bullhorn"></i> Total Campaigns</h3>
-                        <div class="value" id="totalCampaigns">0</div>
+                        <h3>Campaigns</h3>
+                        <div class="value" id="sCamps">0</div>
                     </div>
                     <div class="stat-card">
-                        <h3><i class="fas fa-check-circle"></i> Active</h3>
-                        <div class="value" id="activeCampaigns">0</div>
+                        <h3>Active</h3>
+                        <div class="value" id="sActive">0</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Administrators -->
             <div class="page" id="adminsPage">
                 <div class="page-header">
                     <h1 class="page-title">Administrators</h1><button class="add-btn" onclick="openAddAdmin()"><i
-                            class="fas fa-plus"></i> Add Admin</button>
+                            class="fas fa-plus"></i> Add</button>
                 </div>
                 <div class="table-container">
                     <div class="table-header">
-                        <div class="entries-selector">Show <select id="adminEntries" onchange="renderAdmins()">
-                                <option>10</option>
-                                <option>25</option>
-                                <option>50</option>
-                            </select> entries</div>
-                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="adminSearch"
+                        <div class="search-box"><i class="fas fa-search"></i><input id="adminSearch"
                                 placeholder="Search..." onkeyup="renderAdmins()"></div>
                     </div>
                     <table>
@@ -810,27 +691,20 @@
                         </thead>
                         <tbody id="adminTable"></tbody>
                     </table>
-                    <div class="table-footer">
-                        <div id="adminInfo"></div>
-                        <div class="pagination" id="adminPagination"></div>
+                    <div class="table-footer"><span id="adminInfo"></span>
+                        <div class="pagination" id="adminPag"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Users -->
             <div class="page" id="usersPage">
                 <div class="page-header">
                     <h1 class="page-title">Manage Users</h1><button class="add-btn" onclick="openAddUser()"><i
-                            class="fas fa-plus"></i> Add User</button>
+                            class="fas fa-plus"></i> Add</button>
                 </div>
                 <div class="table-container">
                     <div class="table-header">
-                        <div class="entries-selector">Show <select id="userEntries" onchange="renderUsers()">
-                                <option>10</option>
-                                <option>25</option>
-                                <option>50</option>
-                            </select> entries</div>
-                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="userSearch"
+                        <div class="search-box"><i class="fas fa-search"></i><input id="userSearch"
                                 placeholder="Search..." onkeyup="renderUsers()"></div>
                     </div>
                     <table>
@@ -845,27 +719,20 @@
                         </thead>
                         <tbody id="userTable"></tbody>
                     </table>
-                    <div class="table-footer">
-                        <div id="userInfo"></div>
-                        <div class="pagination" id="userPagination"></div>
+                    <div class="table-footer"><span id="userInfo"></span>
+                        <div class="pagination" id="userPag"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- All Campaigns -->
-            <div class="page" id="allCampaignsPage">
+            <div class="page" id="campaignsPage">
                 <div class="page-header">
                     <h1 class="page-title">All Campaigns</h1><button class="add-btn" onclick="openAddCampaign()"><i
-                            class="fas fa-plus"></i> Add Campaign</button>
+                            class="fas fa-plus"></i> Add</button>
                 </div>
                 <div class="table-container">
                     <div class="table-header">
-                        <div class="entries-selector">Show <select id="campaignEntries" onchange="renderCampaigns()">
-                                <option>10</option>
-                                <option>25</option>
-                                <option>50</option>
-                            </select> entries</div>
-                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="campaignSearch"
+                        <div class="search-box"><i class="fas fa-search"></i><input id="campSearch"
                                 placeholder="Search..." onkeyup="renderCampaigns()"></div>
                     </div>
                     <table>
@@ -875,127 +742,85 @@
                                 <th>Offer ID</th>
                                 <th>Country</th>
                                 <th>Link</th>
-                                <th>Created</th>
-                                <th>Status</th>
+                                <th>Type</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="campaignTable"></tbody>
+                        <tbody id="campTable"></tbody>
                     </table>
-                    <div class="table-footer">
-                        <div id="campaignInfo"></div>
-                        <div class="pagination" id="campaignPagination"></div>
+                    <div class="table-footer"><span id="campInfo"></span>
+                        <div class="pagination" id="campPag"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Assign Campaigns -->
-            <div class="page" id="assignCampaignsPage">
+            <div class="page" id="assignPage">
                 <div class="page-header">
                     <h1 class="page-title">Assign Campaigns</h1>
                 </div>
                 <div class="table-container" style="padding:1.5rem;">
-                    <select class="user-select" id="assignUserSelect">
-                        <option value="">Select a user...</option>
+                    <select class="form-group"
+                        style="width:100%;padding:0.75rem;background:var(--bg-input);border:1px solid var(--border);border-radius:0.5rem;color:var(--text);margin-bottom:1rem;"
+                        id="assignUser">
+                        <option value="">Select User...</option>
                     </select>
-                    <div class="bulk-actions">
-                        <button onclick="toggleAll(true)"><i class="fas fa-check-double"></i> Check All</button>
-                        <button onclick="toggleAll(false)"><i class="fas fa-times"></i> Uncheck All</button>
+                    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                        <button class="add-btn"
+                            style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);"
+                            onclick="checkAll(true)">Check All</button>
+                        <button class="add-btn"
+                            style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);"
+                            onclick="checkAll(false)">Uncheck All</button>
                     </div>
                     <div class="campaign-list" id="assignList"></div>
-                    <div class="modal-footer"
-                        style="border-top:1px solid var(--border);padding-top:1rem;margin-top:1rem;">
-                        <button class="btn-cancel">Cancel</button>
-                        <button class="btn-submit" onclick="submitAssign()">Submit</button>
-                    </div>
+                    <div class="modal-footer"><button class="btn-submit" onclick="submitAssign()">Submit</button></div>
                 </div>
             </div>
 
-            <!-- User Campaigns -->
-            <div class="page" id="userCampaignsPage">
+            <div class="page" id="viewUCPage">
                 <div class="page-header">
                     <h1 class="page-title">User Campaigns</h1>
                 </div>
                 <div class="table-container">
-                    <div class="table-header">
-                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="ucSearch"
-                                placeholder="Search..." onkeyup="renderUC()"></div>
-                    </div>
                     <table>
                         <thead>
                             <tr>
                                 <th>User</th>
                                 <th>Campaign</th>
                                 <th>Country</th>
-                                <th>Link</th>
-                                <th>Type</th>
                                 <th>Count</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="ucTable"></tbody>
                     </table>
-                    <div class="table-footer">
-                        <div id="ucInfo"></div>
-                        <div class="pagination" id="ucPagination"></div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Reset Count -->
             <div class="page" id="resetCountPage">
                 <div class="page-header">
-                    <h1 class="page-title">Set Count Zero</h1>
+                    <h1 class="page-title">Reset Counts</h1>
                 </div>
                 <div class="table-container" style="padding:3rem;text-align:center;">
-                    <i class="fas fa-redo" style="font-size:4rem;color:var(--primary);margin-bottom:1rem;"></i>
-                    <h2>Reset All Campaign Counts</h2>
-                    <p style="color:var(--text-muted);margin:1rem 0;">This will set all user campaign counts to zero.
-                    </p>
+                    <i class="fas fa-redo" style="font-size:3rem;color:var(--primary);margin-bottom:1rem;"></i>
+                    <h2>Reset All Counts to Zero</h2>
+                    <p style="color:var(--text-muted);margin:1rem 0;">This will set all campaign counts to zero.</p>
                     <button class="add-btn" style="display:inline-flex;" onclick="resetCounts()"><i
-                            class="fas fa-check"></i> Reset Counts</button>
+                            class="fas fa-check"></i> Reset</button>
                 </div>
             </div>
 
-            <!-- Settings -->
             <div class="page" id="settingsPage">
                 <div class="page-header">
                     <h1 class="page-title">Settings</h1>
                 </div>
                 <div class="settings-section">
-                    <h3><i class="fas fa-image"></i> Logo Upload</h3>
-                    <div class="file-upload">
-                        <div class="file-preview" id="logoPreview"><i class="fas fa-image"
-                                style="color:var(--text-muted);"></i></div>
-                        <input type="file" id="logoInput" accept="image/*" onchange="previewFile(this,'logoPreview')">
-                        <label for="logoInput"><i class="fas fa-upload"></i> Choose Logo</label>
-                    </div>
+                    <h3><i class="fas fa-database"></i> Database Management</h3>
+                    <p style="color:var(--text-muted);margin-bottom:1rem;">Reset database to default values (this will
+                        delete all your changes)</p>
+                    <button class="add-btn" style="background:var(--danger);" onclick="resetDB()"><i
+                            class="fas fa-trash"></i> Reset Database</button>
                 </div>
-                <div class="settings-section">
-                    <h3><i class="fas fa-star"></i> Favicon Upload</h3>
-                    <div class="file-upload">
-                        <div class="file-preview" id="faviconPreview"><i class="fas fa-star"
-                                style="color:var(--text-muted);"></i></div>
-                        <input type="file" id="faviconInput" accept="image/*"
-                            onchange="previewFile(this,'faviconPreview')">
-                        <label for="faviconInput"><i class="fas fa-upload"></i> Choose Favicon</label>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <h3><i class="fas fa-file-alt"></i> Home Page Content</h3>
-                    <div class="editor-toolbar">
-                        <button onclick="execCmd('bold')"><i class="fas fa-bold"></i></button>
-                        <button onclick="execCmd('italic')"><i class="fas fa-italic"></i></button>
-                        <button onclick="execCmd('underline')"><i class="fas fa-underline"></i></button>
-                        <button onclick="execCmd('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
-                        <button onclick="execCmd('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                    </div>
-                    <div class="editor-content" contenteditable="true" id="homeEditor">
-                        <h2>Welcome to DIGIFILIATE</h2>
-                        <p>Your trusted marketing partner.</p>
-                    </div>
-                </div>
-                <button class="add-btn" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
             </div>
         </main>
     </div>
@@ -1008,9 +833,9 @@
                     onclick="closeModal('adminModal')">&times;</button>
             </div>
             <input type="hidden" id="adminEditId">
-            <div class="form-group"><label>Name</label><input type="text" id="adminName"></div>
+            <div class="form-group"><label>Name</label><input id="adminName"></div>
             <div class="form-group"><label>Email</label><input type="email" id="adminEmail"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="adminPassword"
+            <div class="form-group"><label>Password</label><input type="password" id="adminPwd"
                     placeholder="Enter password"></div>
             <div class="form-group"><label>Status</label><select id="adminStatus">
                     <option value="Active">Active</option>
@@ -1025,31 +850,29 @@
     <div class="modal" id="adminPwdModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Reset Admin Password</h2><button class="modal-close"
+                <h2>Reset Password</h2><button class="modal-close"
                     onclick="closeModal('adminPwdModal')">&times;</button>
             </div>
             <input type="hidden" id="adminPwdId">
-            <div class="form-group"><label>New Password</label><input type="password" id="newAdminPwd"
-                    placeholder="Enter new password"></div>
-            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmAdminPwd"
-                    placeholder="Confirm password"></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="newAdminPwd"></div>
+            <div class="form-group"><label>Confirm</label><input type="password" id="confirmAdminPwd"></div>
             <div class="modal-footer"><button class="btn-cancel"
                     onclick="closeModal('adminPwdModal')">Cancel</button><button class="btn-submit"
                     onclick="resetAdminPwd()">Update</button></div>
         </div>
     </div>
 
-    <div class="modal" id="changeAdminPwdModal">
+    <div class="modal" id="myPwdModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Change My Password</h2><button class="modal-close"
-                    onclick="closeModal('changeAdminPwdModal')">&times;</button>
+                    onclick="closeModal('myPwdModal')">&times;</button>
             </div>
-            <div class="form-group"><label>Current Password</label><input type="password" id="currentPwd"></div>
+            <div class="form-group"><label>Current Password</label><input type="password" id="currPwd"></div>
             <div class="form-group"><label>New Password</label><input type="password" id="myNewPwd"></div>
-            <div class="form-group"><label>Confirm Password</label><input type="password" id="myConfirmPwd"></div>
+            <div class="form-group"><label>Confirm</label><input type="password" id="myConfirmPwd"></div>
             <div class="modal-footer"><button class="btn-cancel"
-                    onclick="closeModal('changeAdminPwdModal')">Cancel</button><button class="btn-submit"
+                    onclick="closeModal('myPwdModal')">Cancel</button><button class="btn-submit"
                     onclick="changeMyPwd()">Update</button></div>
         </div>
     </div>
@@ -1061,9 +884,9 @@
                     onclick="closeModal('userModal')">&times;</button>
             </div>
             <input type="hidden" id="userEditId">
-            <div class="form-group"><label>Username</label><input type="text" id="userNameInput"></div>
+            <div class="form-group"><label>Name</label><input id="userNameInp"></div>
             <div class="form-group"><label>Email</label><input type="email" id="userEmail"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="userPassword"
+            <div class="form-group"><label>Password</label><input type="password" id="userPwd"
                     placeholder="Enter password"></div>
             <div class="form-group"><label>Status</label><select id="userStatus">
                     <option value="Active">Active</option>
@@ -1082,274 +905,215 @@
     <div class="modal" id="userPwdModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Reset User Password</h2><button class="modal-close"
-                    onclick="closeModal('userPwdModal')">&times;</button>
+                <h2>Reset Password</h2><button class="modal-close" onclick="closeModal('userPwdModal')">&times;</button>
             </div>
             <input type="hidden" id="userPwdId">
             <div class="form-group"><label>New Password</label><input type="password" id="newUserPwd"></div>
-            <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmUserPwd"></div>
+            <div class="form-group"><label>Confirm</label><input type="password" id="confirmUserPwd"></div>
             <div class="modal-footer"><button class="btn-cancel"
                     onclick="closeModal('userPwdModal')">Cancel</button><button class="btn-submit"
                     onclick="resetUserPwd()">Update</button></div>
         </div>
     </div>
 
-    <div class="modal" id="campaignModal">
+    <div class="modal" id="campModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="campaignModalTitle">Add Campaign</h2><button class="modal-close"
-                    onclick="closeModal('campaignModal')">&times;</button>
+                <h2 id="campModalTitle">Add Campaign</h2><button class="modal-close"
+                    onclick="closeModal('campModal')">&times;</button>
             </div>
-            <input type="hidden" id="campaignEditId">
-            <div class="form-group"><label>Campaign Name</label><input type="text" id="campaignName"></div>
-            <div class="form-group"><label>Offer ID</label><input type="text" id="campaignOfferId"></div>
-            <div class="form-group"><label>Country</label><input type="text" id="campaignCountry"></div>
-            <div class="form-group"><label>Link</label><input type="url" id="campaignLink"></div>
-            <div class="form-group"><label>Status</label><select id="campaignStatus">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+            <input type="hidden" id="campEditId">
+            <div class="form-group"><label>Name</label><input id="campName"></div>
+            <div class="form-group"><label>Offer ID</label><input id="campOffer"></div>
+            <div class="form-group"><label>Country</label><select id="campCountry"></select></div>
+            <div class="form-group"><label>Link</label><input id="campLink"></div>
+            <div class="form-group"><label>Type</label><select id="campType">
+                    <option value="Click">Click</option>
+                    <option value="Punch">Punch</option>
                 </select></div>
             <div class="modal-footer"><button class="btn-cancel"
-                    onclick="closeModal('campaignModal')">Cancel</button><button class="btn-submit"
+                    onclick="closeModal('campModal')">Cancel</button><button class="btn-submit"
                     onclick="saveCampaign()">Save</button></div>
         </div>
     </div>
 
     <script>
-        // DATABASE
-        let db = {
-            admins: [
-                { id: 1, name: 'Rakesh Kumar', email: 'rakesh@admin.com', password: 'admin123', status: 'Active' },
-                { id: 2, name: 'Priya Sharma', email: 'priya@admin.com', password: 'admin123', status: 'Active' }
-            ],
-            users: [
-                { id: 1, name: 'John Doe', email: 'john@user.com', password: 'user123', status: 'Active', type: 'Punch' },
-                { id: 2, name: 'Jane Smith', email: 'jane@user.com', password: 'user123', status: 'Active', type: 'Click' },
-                { id: 3, name: 'Bob Wilson', email: 'bob@user.com', password: 'user123', status: 'Inactive', type: 'Punch' }
-            ],
-            campaigns: [
-                { id: 1, name: 'Summer Sale', offerId: 'OFF001', country: 'USA', link: 'https://example.com/summer', created: '2024-01-15', status: 'Active' },
-                { id: 2, name: 'Winter Deals', offerId: 'OFF002', country: 'UK', link: 'https://example.com/winter', created: '2024-01-20', status: 'Active' },
-                { id: 3, name: 'Spring Promo', offerId: 'OFF003', country: 'Canada', link: 'https://example.com/spring', created: '2024-02-01', status: 'Inactive' }
-            ],
-            userCampaigns: [
-                { id: 1, userId: 1, campaignId: 1, count: 150 },
-                { id: 2, userId: 2, campaignId: 2, count: 89 }
-            ],
-            currentUser: null
+        const COUNTRIES = ["Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh", "Belgium", "Brazil", "Canada", "Chile", "China", "Colombia", "Croatia", "Czech Republic", "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hong Kong", "Hungary", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Kenya", "Kuwait", "Malaysia", "Mexico", "Morocco", "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Singapore", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "UAE", "UK", "Ukraine", "USA", "Vietnam"];
+
+        const DEFAULT_DB = {
+            admins: [{ id: 1, name: 'Rakesh Kumar', email: 'rakesh@admin.com', password: 'admin123', status: 'Active' }],
+            users: [{ id: 1, name: 'John Doe', email: 'john@user.com', password: 'user123', status: 'Active', type: 'Punch' }, { id: 2, name: 'Jane Smith', email: 'jane@user.com', password: 'user123', status: 'Active', type: 'Click' }],
+            campaigns: [{ id: 1, name: 'Summer Sale', offerId: 'OFF001', country: 'USA', link: 'https://example.com/summer', created: '2024-01-15', type: 'Click' }, { id: 2, name: 'Winter Deals', offerId: 'OFF002', country: 'UK', link: 'https://example.com/winter', created: '2024-01-20', type: 'Punch' }],
+            userCampaigns: [{ id: 1, userId: 1, campaignId: 1, count: 150 }, { id: 2, userId: 1, campaignId: 2, count: 89 }]
         };
 
-        let pagination = { admins: 1, users: 1, campaigns: 1, uc: 1 };
+        // DB Functions
+        function getDB() {
+            const s = localStorage.getItem('digifiliate_db');
+            return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB));
+        }
+        function saveDB() { localStorage.setItem('digifiliate_db', JSON.stringify(db)); }
+        function resetDB() { if (confirm('Reset all data?')) { localStorage.removeItem('digifiliate_db'); location.reload(); } }
 
-        // AUTH
+        let db = getDB();
+        let currentAdmin = null;
+        let page = { admins: 1, users: 1, camps: 1 };
+
+        // Init country dropdown
+        document.getElementById('campCountry').innerHTML = COUNTRIES.map(c => `<option value="${c}">${c}</option>`).join('');
+
+        // Toast
+        function toast(msg, err = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' error' : ''); setTimeout(() => t.className = 'toast', 3000); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // Auth
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
+            db = getDB();
             const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const admin = db.admins.find(a => a.email === email && a.password === password);
-            if (admin && admin.status === 'Active') {
-                db.currentUser = admin;
+            const pwd = document.getElementById('loginPassword').value;
+            const admin = db.admins.find(a => a.email === email && a.password === pwd && a.status === 'Active');
+            if (admin) {
+                currentAdmin = admin;
                 document.getElementById('userName').textContent = admin.name.split(' ')[0];
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('appContainer').classList.add('active');
-                updateDashboard(); renderAll();
-            } else { showToast('Invalid credentials or inactive account!', 'error'); }
+                updateStats(); renderAll();
+            } else { toast('Invalid credentials!', true); }
         });
+        function logout() { currentAdmin = null; document.getElementById('loginPage').style.display = 'flex'; document.getElementById('appContainer').classList.remove('active'); }
 
-        function logout() {
-            db.currentUser = null;
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('appContainer').classList.remove('active');
-        }
-
-        // NAV
+        // Nav
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function () {
-                const page = this.dataset.page;
-                if (this.dataset.toggle === 'submenu') { document.getElementById('campaignSubmenu').classList.toggle('open'); return; }
-                if (page) {
+                if (this.dataset.toggle === 'submenu') { document.getElementById('submenu').classList.toggle('open'); return; }
+                if (this.dataset.page) {
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    document.getElementById(page + 'Page').classList.add('active');
+                    document.getElementById(this.dataset.page + 'Page').classList.add('active');
                     document.getElementById('sidebar').classList.remove('open');
                 }
             });
         });
 
-        // UTILS
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function updateDashboard() {
-            document.getElementById('totalAdmins').textContent = db.admins.length;
-            document.getElementById('totalUsers').textContent = db.users.length;
-            document.getElementById('totalCampaigns').textContent = db.campaigns.length;
-            document.getElementById('activeCampaigns').textContent = db.campaigns.filter(c => c.status === 'Active').length;
+        // Stats
+        function updateStats() {
+            document.getElementById('sAdmins').textContent = db.admins.length;
+            document.getElementById('sUsers').textContent = db.users.length;
+            document.getElementById('sCamps').textContent = db.campaigns.length;
+            document.getElementById('sActive').textContent = db.campaigns.filter(c => c.type === 'Click').length;
         }
 
-        // RENDER
-        function renderTable(data, tableId, infoId, paginationId, entriesId, key, renderRow) {
-            const search = document.getElementById(tableId.replace('Table', 'Search'))?.value.toLowerCase() || '';
-            const entries = parseInt(document.getElementById(entriesId)?.value || 10);
-            const filtered = data.filter(item => JSON.stringify(item).toLowerCase().includes(search));
-            const totalPages = Math.ceil(filtered.length / entries) || 1;
-            const page = Math.min(pagination[key], totalPages);
-            pagination[key] = page;
-            const start = (page - 1) * entries;
-            const pageData = filtered.slice(start, start + entries);
-
-            document.getElementById(tableId).innerHTML = pageData.length ? pageData.map(renderRow).join('') : '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
-            document.getElementById(infoId).textContent = `${start + 1}-${Math.min(start + entries, filtered.length)} of ${filtered.length}`;
-
-            let html = `<button onclick="changePage('${key}',-1)" ${page === 1 ? 'disabled' : ''}>‹</button>`;
-            for (let i = 1; i <= totalPages; i++) html += `<button class="${i === page ? 'active' : ''}" onclick="goToPage('${key}',${i})">${i}</button>`;
-            html += `<button onclick="changePage('${key}',1)" ${page === totalPages ? 'disabled' : ''}>›</button>`;
-            document.getElementById(paginationId).innerHTML = html;
+        // Render Tables
+        function renderTable(data, tableId, infoId, pagId, key, rowFn) {
+            const search = (document.getElementById(tableId.replace('Table', 'Search')) || {}).value?.toLowerCase() || '';
+            const filtered = data.filter(i => JSON.stringify(i).toLowerCase().includes(search));
+            const perPage = 10, totalPages = Math.ceil(filtered.length / perPage) || 1;
+            page[key] = Math.min(page[key], totalPages);
+            const start = (page[key] - 1) * perPage;
+            const items = filtered.slice(start, start + perPage);
+            document.getElementById(tableId).innerHTML = items.length ? items.map(rowFn).join('') : '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
+            document.getElementById(infoId).textContent = `${start + 1}-${Math.min(start + perPage, filtered.length)} of ${filtered.length}`;
+            let html = `<button onclick="goPage('${key}',-1)" ${page[key] === 1 ? 'disabled' : ''}>‹</button>`;
+            for (let i = 1; i <= totalPages; i++)html += `<button class="${i === page[key] ? 'active' : ''}" onclick="goPage('${key}',${i},true)">${i}</button>`;
+            html += `<button onclick="goPage('${key}',1)" ${page[key] === totalPages ? 'disabled' : ''}>›</button>`;
+            document.getElementById(pagId).innerHTML = html;
         }
-        function changePage(key, d) { pagination[key] += d; renderAll(); }
-        function goToPage(key, p) { pagination[key] = p; renderAll(); }
+        function goPage(k, v, abs = false) { page[k] = abs ? v : page[k] + v; renderAll(); }
 
         function renderAdmins() {
-            renderTable(db.admins, 'adminTable', 'adminInfo', 'adminPagination', 'adminEntries', 'admins', a => `
-                <tr><td>${a.name}</td><td>${a.email}</td><td><span class="status ${a.status.toLowerCase()}">${a.status}</span></td>
-                <td class="actions"><button class="action-btn edit" onclick="editAdmin(${a.id})" title="Edit"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openAdminPwd(${a.id})" title="Reset Password"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="deleteAdmin(${a.id})" title="Delete"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(db.admins, 'adminTable', 'adminInfo', 'adminPag', 'admins', a => `<tr><td>${a.name}</td><td>${a.email}</td><td><span class="status ${a.status.toLowerCase()}">${a.status}</span></td><td class="actions"><button class="action-btn edit" onclick="editAdmin(${a.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openAdminPwd(${a.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delAdmin(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
-
         function renderUsers() {
-            renderTable(db.users, 'userTable', 'userInfo', 'userPagination', 'userEntries', 'users', u => `
-                <tr><td>${u.name}</td><td>${u.email}</td><td><span class="status ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.type}</td>
-                <td class="actions"><button class="action-btn edit" onclick="editUser(${u.id})" title="Edit"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openUserPwd(${u.id})" title="Reset Password"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="deleteUser(${u.id})" title="Delete"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(db.users, 'userTable', 'userInfo', 'userPag', 'users', u => `<tr><td>${u.name}</td><td>${u.email}</td><td><span class="status ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.type}</td><td class="actions"><button class="action-btn edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openUserPwd(${u.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delUser(${u.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
-
         function renderCampaigns() {
-            renderTable(db.campaigns, 'campaignTable', 'campaignInfo', 'campaignPagination', 'campaignEntries', 'campaigns', c => `
-                <tr><td>${c.name}</td><td>${c.offerId}</td><td>${c.country}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary);">${c.link.substring(0, 25)}...</a></td><td>${c.created}</td><td><span class="status ${c.status.toLowerCase()}">${c.status}</span></td>
-                <td class="actions"><button class="action-btn edit" onclick="editCampaign(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="deleteCampaign(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(db.campaigns, 'campTable', 'campInfo', 'campPag', 'camps', c => `<tr><td>${c.name}</td><td>${c.offerId}</td><td>${c.country}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary)">${c.link.substring(0, 25)}...</a></td><td><span class="status ${c.type?.toLowerCase() || 'click'}">${c.type || 'Click'}</span></td><td class="actions"><button class="action-btn edit" onclick="editCamp(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="delCamp(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
-
         function renderUC() {
-            const data = db.userCampaigns.map(uc => {
-                const user = db.users.find(u => u.id === uc.userId);
-                const camp = db.campaigns.find(c => c.id === uc.campaignId);
-                return { ...uc, userName: user?.name || 'N/A', campaignName: camp?.name || 'N/A', country: camp?.country || '', link: camp?.link || '', type: user?.type || '' };
-            });
-            renderTable(data, 'ucTable', 'ucInfo', 'ucPagination', null, 'uc', uc => `
-                <tr><td>${uc.userName}</td><td>${uc.campaignName}</td><td>${uc.country}</td><td><a href="${uc.link}" target="_blank" style="color:var(--primary);">${uc.link.substring(0, 20)}...</a></td><td>${uc.type}</td><td>${uc.count}</td>
-                <td class="actions"><button class="action-btn delete" onclick="deleteUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+            document.getElementById('ucTable').innerHTML = db.userCampaigns.map(uc => {
+                const u = db.users.find(x => x.id === uc.userId);
+                const c = db.campaigns.find(x => x.id === uc.campaignId);
+                return `<tr><td>${u?.name || 'Deleted'}</td><td>${c?.name || 'Deleted'}</td><td>${c?.country || ''}</td><td>${uc.count}</td><td class="actions"><button class="action-btn delete" onclick="delUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('') || '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
         }
-
         function renderAssign() {
-            document.getElementById('assignUserSelect').innerHTML = '<option value="">Select user...</option>' + db.users.map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
-            document.getElementById('assignList').innerHTML = db.campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="c_${c.id}" value="${c.id}"><label for="c_${c.id}">${c.name} - ${c.country}</label></div>`).join('');
+            document.getElementById('assignUser').innerHTML = '<option value="">Select User...</option>' + db.users.filter(u => u.status === 'Active').map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+            document.getElementById('assignList').innerHTML = db.campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="ac_${c.id}" value="${c.id}"><label for="ac_${c.id}">${c.name} - ${c.country} (${c.type || 'Click'})</label></div>`).join('');
         }
-
         function renderAll() { renderAdmins(); renderUsers(); renderCampaigns(); renderUC(); renderAssign(); }
 
-        // CRUD - ADMINS
-        function openAddAdmin() { document.getElementById('adminEditId').value = ''; document.getElementById('adminName').value = ''; document.getElementById('adminEmail').value = ''; document.getElementById('adminPassword').value = ''; document.getElementById('adminModalTitle').textContent = 'Add Admin'; openModal('adminModal'); }
-        function editAdmin(id) { const a = db.admins.find(x => x.id === id); document.getElementById('adminEditId').value = id; document.getElementById('adminName').value = a.name; document.getElementById('adminEmail').value = a.email; document.getElementById('adminPassword').value = ''; document.getElementById('adminStatus').value = a.status; document.getElementById('adminModalTitle').textContent = 'Edit Admin'; openModal('adminModal'); }
+        // CRUD Admins
+        function openAddAdmin() { document.getElementById('adminEditId').value = ''; document.getElementById('adminName').value = ''; document.getElementById('adminEmail').value = ''; document.getElementById('adminPwd').value = ''; document.getElementById('adminModalTitle').textContent = 'Add Admin'; openModal('adminModal'); }
+        function editAdmin(id) { const a = db.admins.find(x => x.id === id); document.getElementById('adminEditId').value = id; document.getElementById('adminName').value = a.name; document.getElementById('adminEmail').value = a.email; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = a.status; document.getElementById('adminModalTitle').textContent = 'Edit Admin'; openModal('adminModal'); }
         function saveAdmin() {
             const id = document.getElementById('adminEditId').value;
             const data = { name: document.getElementById('adminName').value, email: document.getElementById('adminEmail').value, status: document.getElementById('adminStatus').value };
-            const pwd = document.getElementById('adminPassword').value;
-            if (!data.name || !data.email) return showToast('Fill all fields', 'error');
+            const pwd = document.getElementById('adminPwd').value;
+            if (!data.name || !data.email) return toast('Fill all fields', true);
             if (id) { const a = db.admins.find(x => x.id == id); Object.assign(a, data); if (pwd) a.password = pwd; }
-            else { if (!pwd) return showToast('Password required', 'error'); db.admins.push({ id: Date.now(), ...data, password: pwd }); }
-            closeModal('adminModal'); updateDashboard(); renderAdmins(); showToast('Admin saved!');
+            else { if (!pwd) return toast('Password required', true); db.admins.push({ id: Date.now(), ...data, password: pwd }); }
+            saveDB(); closeModal('adminModal'); updateStats(); renderAdmins(); toast('Saved!');
         }
-        function deleteAdmin(id) { if (confirm('Delete admin?')) { db.admins = db.admins.filter(a => a.id !== id); updateDashboard(); renderAdmins(); showToast('Deleted!'); } }
+        function delAdmin(id) { if (confirm('Delete?')) { db.admins = db.admins.filter(a => a.id !== id); saveDB(); updateStats(); renderAdmins(); toast('Deleted!'); } }
         function openAdminPwd(id) { document.getElementById('adminPwdId').value = id; document.getElementById('newAdminPwd').value = ''; document.getElementById('confirmAdminPwd').value = ''; openModal('adminPwdModal'); }
-        function resetAdminPwd() {
-            const id = document.getElementById('adminPwdId').value;
-            const pwd = document.getElementById('newAdminPwd').value;
-            const confirm = document.getElementById('confirmAdminPwd').value;
-            if (pwd !== confirm) return showToast('Passwords do not match', 'error');
-            if (pwd.length < 4) return showToast('Password too short', 'error');
-            db.admins.find(a => a.id == id).password = pwd;
-            closeModal('adminPwdModal'); showToast('Password updated!');
-        }
-        function changeMyPwd() {
-            const current = document.getElementById('currentPwd').value;
-            const newPwd = document.getElementById('myNewPwd').value;
-            const confirm = document.getElementById('myConfirmPwd').value;
-            if (db.currentUser.password !== current) return showToast('Current password incorrect', 'error');
-            if (newPwd !== confirm) return showToast('Passwords do not match', 'error');
-            if (newPwd.length < 4) return showToast('Password too short', 'error');
-            db.currentUser.password = newPwd;
-            db.admins.find(a => a.id === db.currentUser.id).password = newPwd;
-            closeModal('changeAdminPwdModal'); showToast('Password changed!');
-        }
+        function resetAdminPwd() { const id = document.getElementById('adminPwdId').value; const p = document.getElementById('newAdminPwd').value; const c = document.getElementById('confirmAdminPwd').value; if (p !== c) return toast('Mismatch', true); if (p.length < 4) return toast('Min 4 chars', true); db.admins.find(a => a.id == id).password = p; saveDB(); closeModal('adminPwdModal'); toast('Updated!'); }
+        function changeMyPwd() { const curr = document.getElementById('currPwd').value; const p = document.getElementById('myNewPwd').value; const c = document.getElementById('myConfirmPwd').value; if (currentAdmin.password !== curr) return toast('Wrong password', true); if (p !== c) return toast('Mismatch', true); if (p.length < 4) return toast('Min 4 chars', true); currentAdmin.password = p; db.admins.find(a => a.id === currentAdmin.id).password = p; saveDB(); closeModal('myPwdModal'); toast('Changed!'); }
 
-        // CRUD - USERS
-        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInput').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPassword').value = ''; document.getElementById('userModalTitle').textContent = 'Add User'; openModal('userModal'); }
-        function editUser(id) { const u = db.users.find(x => x.id === id); document.getElementById('userEditId').value = id; document.getElementById('userNameInput').value = u.name; document.getElementById('userEmail').value = u.email; document.getElementById('userPassword').value = ''; document.getElementById('userStatus').value = u.status; document.getElementById('userType').value = u.type; document.getElementById('userModalTitle').textContent = 'Edit User'; openModal('userModal'); }
+        // CRUD Users
+        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInp').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPwd').value = ''; document.getElementById('userModalTitle').textContent = 'Add User'; openModal('userModal'); }
+        function editUser(id) { const u = db.users.find(x => x.id === id); document.getElementById('userEditId').value = id; document.getElementById('userNameInp').value = u.name; document.getElementById('userEmail').value = u.email; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = u.status; document.getElementById('userType').value = u.type; document.getElementById('userModalTitle').textContent = 'Edit User'; openModal('userModal'); }
         function saveUser() {
             const id = document.getElementById('userEditId').value;
-            const data = { name: document.getElementById('userNameInput').value, email: document.getElementById('userEmail').value, status: document.getElementById('userStatus').value, type: document.getElementById('userType').value };
-            const pwd = document.getElementById('userPassword').value;
-            if (!data.name || !data.email) return showToast('Fill all fields', 'error');
+            const data = { name: document.getElementById('userNameInp').value, email: document.getElementById('userEmail').value, status: document.getElementById('userStatus').value, type: document.getElementById('userType').value };
+            const pwd = document.getElementById('userPwd').value;
+            if (!data.name || !data.email) return toast('Fill all fields', true);
             if (id) { const u = db.users.find(x => x.id == id); Object.assign(u, data); if (pwd) u.password = pwd; }
-            else { if (!pwd) return showToast('Password required', 'error'); db.users.push({ id: Date.now(), ...data, password: pwd }); }
-            closeModal('userModal'); updateDashboard(); renderAll(); showToast('User saved!');
+            else { if (!pwd) return toast('Password required', true); db.users.push({ id: Date.now(), ...data, password: pwd }); }
+            saveDB(); closeModal('userModal'); updateStats(); renderAll(); toast('Saved!');
         }
-        function deleteUser(id) { if (confirm('Delete user?')) { db.users = db.users.filter(u => u.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.userId !== id); updateDashboard(); renderAll(); showToast('Deleted!'); } }
+        function delUser(id) { if (confirm('Delete?')) { db.users = db.users.filter(u => u.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.userId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
         function openUserPwd(id) { document.getElementById('userPwdId').value = id; document.getElementById('newUserPwd').value = ''; document.getElementById('confirmUserPwd').value = ''; openModal('userPwdModal'); }
-        function resetUserPwd() {
-            const id = document.getElementById('userPwdId').value;
-            const pwd = document.getElementById('newUserPwd').value;
-            const confirm = document.getElementById('confirmUserPwd').value;
-            if (pwd !== confirm) return showToast('Passwords do not match', 'error');
-            if (pwd.length < 4) return showToast('Password too short', 'error');
-            db.users.find(u => u.id == id).password = pwd;
-            closeModal('userPwdModal'); showToast('Password updated!');
-        }
+        function resetUserPwd() { const id = document.getElementById('userPwdId').value; const p = document.getElementById('newUserPwd').value; const c = document.getElementById('confirmUserPwd').value; if (p !== c) return toast('Mismatch', true); if (p.length < 4) return toast('Min 4 chars', true); db.users.find(u => u.id == id).password = p; saveDB(); closeModal('userPwdModal'); toast('Updated!'); }
 
-        // CRUD - CAMPAIGNS
-        function openAddCampaign() { document.getElementById('campaignEditId').value = '';['campaignName', 'campaignOfferId', 'campaignCountry', 'campaignLink'].forEach(id => document.getElementById(id).value = ''); document.getElementById('campaignModalTitle').textContent = 'Add Campaign'; openModal('campaignModal'); }
-        function editCampaign(id) { const c = db.campaigns.find(x => x.id === id); document.getElementById('campaignEditId').value = id; document.getElementById('campaignName').value = c.name; document.getElementById('campaignOfferId').value = c.offerId; document.getElementById('campaignCountry').value = c.country; document.getElementById('campaignLink').value = c.link; document.getElementById('campaignStatus').value = c.status; document.getElementById('campaignModalTitle').textContent = 'Edit Campaign'; openModal('campaignModal'); }
+        // CRUD Campaigns
+        function openAddCampaign() { document.getElementById('campEditId').value = ''; document.getElementById('campName').value = ''; document.getElementById('campOffer').value = ''; document.getElementById('campLink').value = ''; document.getElementById('campModalTitle').textContent = 'Add Campaign'; openModal('campModal'); }
+        function editCamp(id) { const c = db.campaigns.find(x => x.id === id); document.getElementById('campEditId').value = id; document.getElementById('campName').value = c.name; document.getElementById('campOffer').value = c.offerId; document.getElementById('campCountry').value = c.country; document.getElementById('campLink').value = c.link; document.getElementById('campType').value = c.type || 'Click'; document.getElementById('campModalTitle').textContent = 'Edit Campaign'; openModal('campModal'); }
         function saveCampaign() {
-            const id = document.getElementById('campaignEditId').value;
-            const data = { name: document.getElementById('campaignName').value, offerId: document.getElementById('campaignOfferId').value, country: document.getElementById('campaignCountry').value, link: document.getElementById('campaignLink').value, status: document.getElementById('campaignStatus').value, created: new Date().toISOString().split('T')[0] };
-            if (!data.name) return showToast('Name required', 'error');
+            const id = document.getElementById('campEditId').value;
+            const data = { name: document.getElementById('campName').value, offerId: document.getElementById('campOffer').value, country: document.getElementById('campCountry').value, link: document.getElementById('campLink').value, type: document.getElementById('campType').value, created: new Date().toISOString().split('T')[0] };
+            if (!data.name) return toast('Name required', true);
             if (id) { const c = db.campaigns.find(x => x.id == id); Object.assign(c, data); }
             else { db.campaigns.push({ id: Date.now(), ...data }); }
-            closeModal('campaignModal'); updateDashboard(); renderAll(); showToast('Campaign saved!');
+            saveDB(); closeModal('campModal'); updateStats(); renderAll(); toast('Saved!');
         }
-        function deleteCampaign(id) { if (confirm('Delete?')) { db.campaigns = db.campaigns.filter(c => c.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.campaignId !== id); updateDashboard(); renderAll(); showToast('Deleted!'); } }
+        function delCamp(id) { if (confirm('Delete?')) { db.campaigns = db.campaigns.filter(c => c.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.campaignId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
 
-        // ASSIGN & COUNT
-        function toggleAll(checked) { document.querySelectorAll('#assignList input').forEach(cb => cb.checked = checked); }
+        // Assign & Reset
+        function checkAll(v) { document.querySelectorAll('#assignList input').forEach(cb => cb.checked = v); }
         function submitAssign() {
-            const userId = parseInt(document.getElementById('assignUserSelect').value);
-            if (!userId) return showToast('Select a user', 'error');
+            const userId = parseInt(document.getElementById('assignUser').value);
+            if (!userId) return toast('Select user', true);
             document.querySelectorAll('#assignList input:checked').forEach(cb => {
-                const campId = parseInt(cb.value);
-                if (!db.userCampaigns.find(uc => uc.userId === userId && uc.campaignId === campId)) {
-                    db.userCampaigns.push({ id: Date.now() + Math.random(), userId, campaignId: campId, count: 0 });
+                const cid = parseInt(cb.value);
+                if (!db.userCampaigns.find(uc => uc.userId === userId && uc.campaignId === cid)) {
+                    db.userCampaigns.push({ id: Date.now() + Math.random(), userId, campaignId: cid, count: 0 });
                 }
             });
-            renderAll(); showToast('Assigned!');
+            saveDB(); renderAll(); toast('Assigned!');
         }
-        function deleteUC(id) { if (confirm('Remove?')) { db.userCampaigns = db.userCampaigns.filter(uc => uc.id !== id); renderUC(); showToast('Removed!'); } }
-        function resetCounts() { db.userCampaigns.forEach(uc => uc.count = 0); renderUC(); showToast('Counts reset to zero!'); }
+        function delUC(id) { if (confirm('Remove?')) { db.userCampaigns = db.userCampaigns.filter(uc => uc.id !== id); saveDB(); renderUC(); toast('Removed!'); } }
+        function resetCounts() { db.userCampaigns.forEach(uc => uc.count = 0); saveDB(); renderUC(); toast('Reset!'); }
 
-        // SETTINGS
-        function previewFile(input, previewId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => document.getElementById(previewId).innerHTML = `<img src="${e.target.result}">`;
-                reader.readAsDataURL(input.files[0]);
-            }
+        // Theme
+        function toggleTheme() {
+            const b = document.body, i = document.getElementById('themeIcon');
+            if (b.getAttribute('data-theme') === 'light') { b.removeAttribute('data-theme'); i.className = 'fas fa-moon'; localStorage.setItem('theme', 'dark'); }
+            else { b.setAttribute('data-theme', 'light'); i.className = 'fas fa-sun'; localStorage.setItem('theme', 'light'); }
         }
-        function execCmd(cmd) { document.execCommand(cmd, false, null); }
-        function saveSettings() { showToast('Settings saved!'); }
+        if (localStorage.getItem('theme') === 'light') { document.body.setAttribute('data-theme', 'light'); document.getElementById('themeIcon').className = 'fas fa-sun'; }
 
         renderAll();
     </script>
