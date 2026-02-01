@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f2f5;
+            color: #333;
+            flex-direction: column;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader"></div>
+    <p id="msg">Redirecting to offer...</p>
+
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+
+        async function trackAndRedirect() {
+            const params = new URLSearchParams(window.location.search);
+            const refId = params.get('ref');
+
+            if (!refId) {
+                document.getElementById('msg').innerText = 'Invalid tracking link.';
+                document.querySelector('.loader').style.display = 'none';
+                return;
+            }
+
+            try {
+                // 1. Get Assignment details (to find next count and campaign link)
+                // We join assignments with campaign data
+                const { data: assignment, error } = await sb
+                    .from('assignments')
+                    .select('*, campaigns(*)')
+                    .eq('id', refId)
+                    .single();
+
+                if (error || !assignment) throw new Error('Offer not found');
+
+                // 2. Increment Count (Optimistic)
+                // Note: In production, use an RPC for atomic increment.
+                await sb.from('assignments')
+                    .update({ count: (assignment.count || 0) + 1 })
+                    .eq('id', refId);
+
+                // 3. Redirect
+                if (assignment.campaigns && assignment.campaigns.link) {
+                    // Ensure protocol exists
+                    let dest = assignment.campaigns.link;
+                    if (!dest.startsWith('http')) dest = 'https://' + dest;
+                    window.location.href = dest;
+                } else {
+                    throw new Error('Destination link missing');
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('msg').innerText = 'Tracking error. Redirecting to home...';
+                setTimeout(() => window.location.href = 'index.html', 2000);
+            }
+        }
+
+        trackAndRedirect();
+    </script>
+</body>
+
+</html>
