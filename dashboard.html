@@ -1044,7 +1044,7 @@
         // Initialize Supabase
         const SUPABASE_URL = 'https://hiyxrgbyftirxxbeklrn.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeXhyZ2J5ZnRpcnh4YmVrbHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4OTA4MzUsImV4cCI6MjA4NTQ2NjgzNX0.SJj5nCjV1Q914JqdOLF22_wogigntCIhuknwZdGH--k';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const COUNTRIES = ["Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh", "Belgium", "Brazil", "Canada", "Chile", "China", "Colombia", "Croatia", "Czech Republic", "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hong Kong", "Hungary", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Kenya", "Kuwait", "Malaysia", "Mexico", "Morocco", "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Singapore", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "UAE", "UK", "Ukraine", "USA", "Vietnam"];
 
@@ -1071,22 +1071,22 @@
         async function refreshData() {
             try {
                 if (isAdmin) {
-                    const { data: admins } = await supabase.from('admins').select('*').order('id');
-                    const { data: users } = await supabase.from('users').select('*').order('id');
-                    const { data: camps } = await supabase.from('campaigns').select('*').order('id');
-                    const { data: assigns } = await supabase.from('assignments').select('*');
+                    const { data: admins } = await sb.from('admins').select('*').order('id');
+                    const { data: users } = await sb.from('users').select('*').order('id');
+                    const { data: camps } = await sb.from('campaigns').select('*').order('id');
+                    const { data: assigns } = await sb.from('assignments').select('*');
 
                     _admins = admins || [];
                     _users = users || [];
                     _campaigns = camps || [];
                     _assignments = assigns || [];
                 } else {
-                    const { data: userAssigns } = await supabase.from('assignments').select('*').eq('user_id', currentUser.id);
+                    const { data: userAssigns } = await sb.from('assignments').select('*').eq('user_id', currentUser.id);
                     _assignments = userAssigns || [];
 
                     if (_assignments.length > 0) {
                         const campaignIds = _assignments.map(a => a.campaign_id);
-                        const { data: camps } = await supabase.from('campaigns').select('*').in('id', campaignIds);
+                        const { data: camps } = await sb.from('campaigns').select('*').in('id', campaignIds);
                         _campaigns = camps || [];
                     } else {
                         _campaigns = [];
@@ -1112,8 +1112,11 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
                 btn.disabled = true;
 
+                console.log('Attempting login for:', email);
+
                 // Check Admin
-                let { data: admin, error: adminErr } = await supabase.from('admins').select('*').eq('email', email).limit(1).maybeSingle();
+                let { data: admin, error: adminErr } = await sb.from('admins').select('*').eq('email', email).limit(1).maybeSingle();
+                console.log('Admin fetch result:', { admin, adminErr });
 
                 if (admin && admin.password === pwd) {
                     if (admin.status !== 'Active') throw new Error('Account inactive');
@@ -1125,7 +1128,8 @@
                 }
 
                 // Check User
-                let { data: user, error: userErr } = await supabase.from('users').select('*').eq('email', email).limit(1).maybeSingle();
+                let { data: user, error: userErr } = await sb.from('users').select('*').eq('email', email).limit(1).maybeSingle();
+                console.log('User fetch result:', { user, userErr });
 
                 if (user && user.password === pwd) {
                     if (user.status !== 'Active') throw new Error('Account inactive');
@@ -1136,8 +1140,12 @@
                     return;
                 }
 
+                if (adminErr) console.error('Supabase Admin Error:', adminErr);
+                if (userErr) console.error('Supabase User Error:', userErr);
+
                 throw new Error('Invalid credentials');
             } catch (err) {
+                console.error('Login Exception:', err);
                 toast(err.message, 'error');
             } finally {
                 btn.innerHTML = originalText;
@@ -1160,7 +1168,7 @@
 
             try {
                 const table = session.isAdmin ? 'admins' : 'users';
-                const { data: user } = await supabase.from(table).select('*').eq('id', session.userId).single();
+                const { data: user } = await sb.from(table).select('*').eq('id', session.userId).single();
 
                 if (user && user.status === 'Active') {
                     currentUser = user;
@@ -1339,10 +1347,10 @@
 
             try {
                 if (id) {
-                    await supabase.from('admins').update(payload).eq('id', id).throwOnError();
+                    await sb.from('admins').update(payload).eq('id', id).throwOnError();
                 } else {
                     if (!pwd) return toast('Password required for new admin', 'error');
-                    await supabase.from('admins').insert([payload]).throwOnError();
+                    await sb.from('admins').insert([payload]).throwOnError();
                 }
                 closeModal('adminModal');
                 toast('Saved!');
@@ -1352,7 +1360,7 @@
         async function delAdmin(id) {
             if (_admins.length === 1) return toast('Cannot delete last admin', 'error');
             if (confirm('Delete this admin?')) {
-                await supabase.from('admins').delete().eq('id', id);
+                await sb.from('admins').delete().eq('id', id);
                 refreshData();
                 toast('Deleted!');
             }
@@ -1365,7 +1373,7 @@
             if (p !== c || p.length < 4) return toast('Invalid password', 'error');
 
             try {
-                await supabase.from('admins').update({ password: p }).eq('id', id).throwOnError();
+                await sb.from('admins').update({ password: p }).eq('id', id).throwOnError();
                 closeModal('adminPwdModal');
                 toast('Updated!');
                 refreshData();
@@ -1388,11 +1396,11 @@
             try {
                 if (id) {
                     if (pwd) payload.password = pwd;
-                    await supabase.from('users').update(payload).eq('id', id).throwOnError();
+                    await sb.from('users').update(payload).eq('id', id).throwOnError();
                 } else {
                     if (!pwd) return toast('Password required', 'error');
                     payload.password = pwd;
-                    await supabase.from('users').insert([payload]).throwOnError();
+                    await sb.from('users').insert([payload]).throwOnError();
                 }
                 closeModal('userModal');
                 toast('Saved!');
@@ -1401,7 +1409,7 @@
         }
         async function delUser(id) {
             if (confirm('Delete user?')) {
-                await supabase.from('users').delete().eq('id', id);
+                await sb.from('users').delete().eq('id', id);
                 refreshData();
                 toast('Deleted!');
             }
@@ -1411,7 +1419,7 @@
             const id = document.getElementById('userPwdId').value;
             const p = document.getElementById('newUserPwd').value;
             if (p !== document.getElementById('confirmUserPwd').value) return toast('Mismatch', 'error');
-            await supabase.from('users').update({ password: p }).eq('id', id);
+            await sb.from('users').update({ password: p }).eq('id', id);
             closeModal('userPwdModal'); toast('Updated');
         }
 
@@ -1444,8 +1452,8 @@
             };
 
             try {
-                if (id) await supabase.from('campaigns').update(payload).eq('id', id).throwOnError();
-                else await supabase.from('campaigns').insert([payload]).throwOnError();
+                if (id) await sb.from('campaigns').update(payload).eq('id', id).throwOnError();
+                else await sb.from('campaigns').insert([payload]).throwOnError();
                 closeModal('campModal');
                 toast('Saved');
                 refreshData();
@@ -1453,7 +1461,7 @@
         }
         async function delCamp(id) {
             if (confirm('Delete campaign?')) {
-                await supabase.from('campaigns').delete().eq('id', id);
+                await sb.from('campaigns').delete().eq('id', id);
                 refreshData();
                 toast('Deleted');
             }
@@ -1474,7 +1482,7 @@
                 // We must ensure the unique constraint exists in DB (I added it in the DDL).
                 const inserts = checked.map(cid => ({ user_id: userId, campaign_id: cid, count: 0 }));
 
-                const { error } = await supabase.from('assignments').upsert(inserts, { onConflict: 'user_id,campaign_id', ignoreDuplicates: true });
+                const { error } = await sb.from('assignments').upsert(inserts, { onConflict: 'user_id,campaign_id', ignoreDuplicates: true });
                 if (error) throw error;
                 toast('Assigned!');
                 refreshData();
@@ -1482,7 +1490,7 @@
         }
         async function delUC(id) {
             if (confirm('Remove assignment?')) {
-                await supabase.from('assignments').delete().eq('id', id);
+                await sb.from('assignments').delete().eq('id', id);
                 refreshData();
                 toast('Removed');
             }
@@ -1490,7 +1498,7 @@
         async function resetCounts() {
             if (confirm('Reset all assignment counts to 0?')) {
                 // Hack: update where id > 0
-                await supabase.from('assignments').update({ count: 0 }).gt('id', 0);
+                await sb.from('assignments').update({ count: 0 }).gt('id', 0);
                 refreshData();
                 toast('Reset!');
             }
@@ -1506,7 +1514,7 @@
 
             try {
                 const table = isAdmin ? 'admins' : 'users';
-                await supabase.from(table).update({ password: p }).eq('id', currentUser.id).throwOnError();
+                await sb.from(table).update({ password: p }).eq('id', currentUser.id).throwOnError();
                 currentUser.password = p; // update local
                 closeModal('myPwdModal');
                 toast('Updated!');
