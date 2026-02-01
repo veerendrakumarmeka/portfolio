@@ -908,10 +908,8 @@
                     <h1 class="page-title">Settings</h1>
                 </div>
                 <div class="settings-section">
-                    <h3><i class="fas fa-database"></i> Database Management</h3>
-                    <p style="color:var(--text-muted);margin-bottom:1rem;">Reset database to default values</p>
-                    <button class="add-btn" style="background:var(--danger);" onclick="resetDB()"><i
-                            class="fas fa-trash"></i> Reset Database</button>
+                    <h3><i class="fas fa-info-circle"></i> Application Info</h3>
+                    <p style="color:var(--text-muted);margin-bottom:1rem;">Connected to Supabase Cloud Database.</p>
                 </div>
             </div>
 
@@ -1041,26 +1039,27 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://hiyxrgbyftirxxbeklrn.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeXhyZ2J5ZnRpcnh4YmVrbHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4OTA4MzUsImV4cCI6MjA4NTQ2NjgzNX0.SJj5nCjV1Q914JqdOLF22_wogigntCIhuknwZdGH--k';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const COUNTRIES = ["Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh", "Belgium", "Brazil", "Canada", "Chile", "China", "Colombia", "Croatia", "Czech Republic", "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hong Kong", "Hungary", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Kenya", "Kuwait", "Malaysia", "Mexico", "Morocco", "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Singapore", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "UAE", "UK", "Ukraine", "USA", "Vietnam"];
 
-        const DEFAULT_DB = {
-            admins: [{ id: 1, name: 'Rakesh Kumar', email: 'rakesh@admin.com', password: 'admin123', status: 'Active' }],
-            users: [{ id: 1, name: 'John Doe', email: 'john@user.com', password: 'user123', status: 'Active', type: 'Punch' }, { id: 2, name: 'Jane Smith', email: 'jane@user.com', password: 'user123', status: 'Active', type: 'Click' }],
-            campaigns: [{ id: 1, name: 'Summer Sale', offerId: 'OFF001', country: 'USA', link: 'https://example.com/summer', created: '2024-01-15', type: 'Click' }, { id: 2, name: 'Winter Deals', offerId: 'OFF002', country: 'UK', link: 'https://example.com/winter', created: '2024-01-20', type: 'Punch' }],
-            userCampaigns: [{ id: 1, visibleId: 1, userId: 1, campaignId: 1, count: 150 }, { id: 2, visibleId: 2, userId: 1, campaignId: 2, count: 89 }]
-        };
-
-        function getDB() { const s = localStorage.getItem('digifiliate_db'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB)); }
-        function saveDB() { localStorage.setItem('digifiliate_db', JSON.stringify(db)); }
-        function resetDB() { if (confirm('Reset all data? This will log you out.')) { localStorage.removeItem('digifiliate_db'); localStorage.removeItem('digifiliate_session'); location.reload(); } }
-
-        let db = getDB();
+        // State
         let currentUser = null;
         let isAdmin = false;
         let page = { admins: 1, users: 1, camps: 1 };
 
-        // Init country dropdown
+        // Data Cache (for rendering)
+        let _admins = [];
+        let _users = [];
+        let _campaigns = [];
+        let _assignments = [];
+
+        // Init Data
         document.getElementById('campCountry').innerHTML = COUNTRIES.map(c => `<option value="${c}">${c}</option>`).join('');
 
         // Toast & Modal
@@ -1068,77 +1067,113 @@
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // Session Management
+        // Fetch Data Wrapper
+        async function refreshData() {
+            try {
+                if (isAdmin) {
+                    const { data: admins } = await supabase.from('admins').select('*').order('id');
+                    const { data: users } = await supabase.from('users').select('*').order('id');
+                    const { data: camps } = await supabase.from('campaigns').select('*').order('id');
+                    const { data: assigns } = await supabase.from('assignments').select('*');
+
+                    _admins = admins || [];
+                    _users = users || [];
+                    _campaigns = camps || [];
+                    _assignments = assigns || [];
+                } else {
+                    const { data: userAssigns } = await supabase.from('assignments').select('*').eq('user_id', currentUser.id);
+                    _assignments = userAssigns || [];
+
+                    if (_assignments.length > 0) {
+                        const campaignIds = _assignments.map(a => a.campaign_id);
+                        const { data: camps } = await supabase.from('campaigns').select('*').in('id', campaignIds);
+                        _campaigns = camps || [];
+                    } else {
+                        _campaigns = [];
+                    }
+                }
+                updateStats();
+                renderAll();
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                toast('Error fetching data', 'error');
+            }
+        }
+
+        // Auth Logic
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pwd = document.getElementById('loginPassword').value;
+            const btn = this.querySelector('button');
+            const originalText = btn.innerHTML;
+
+            try {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+                btn.disabled = true;
+
+                // Check Admin
+                let { data: admin, error: adminErr } = await supabase.from('admins').select('*').eq('email', email).limit(1).maybeSingle();
+
+                if (admin && admin.password === pwd) {
+                    if (admin.status !== 'Active') throw new Error('Account inactive');
+                    currentUser = admin;
+                    isAdmin = true;
+                    saveSession();
+                    showDashboard();
+                    return;
+                }
+
+                // Check User
+                let { data: user, error: userErr } = await supabase.from('users').select('*').eq('email', email).limit(1).maybeSingle();
+
+                if (user && user.password === pwd) {
+                    if (user.status !== 'Active') throw new Error('Account inactive');
+                    currentUser = user;
+                    isAdmin = false;
+                    saveSession();
+                    showDashboard();
+                    return;
+                }
+
+                throw new Error('Invalid credentials');
+            } catch (err) {
+                toast(err.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
         function saveSession() {
             const session = { userId: currentUser.id, isAdmin: isAdmin, timestamp: Date.now() };
             localStorage.setItem('digifiliate_session', JSON.stringify(session));
         }
-        function loadSession() {
+
+        async function loadSession() {
             const s = localStorage.getItem('digifiliate_session');
             if (!s) return false;
             const session = JSON.parse(s);
-            // Session expires in 24 hours
             if (Date.now() - session.timestamp > 24 * 60 * 60 * 1000) {
-                localStorage.removeItem('digifiliate_session');
-                return false;
+                clearSession(); return false;
             }
-            db = getDB();
-            if (session.isAdmin) {
-                currentUser = db.admins.find(a => a.id === session.userId && a.status === 'Active');
-                isAdmin = true;
-            } else {
-                currentUser = db.users.find(u => u.id === session.userId && u.status === 'Active');
-                isAdmin = false;
-            }
-            if (!currentUser) {
-                localStorage.removeItem('digifiliate_session');
-                return false;
-            }
-            return true;
-        }
-        function clearSession() { localStorage.removeItem('digifiliate_session'); }
 
-        // Auth
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            db = getDB();
-            const email = document.getElementById('loginEmail').value;
-            const pwd = document.getElementById('loginPassword').value;
+            try {
+                const table = session.isAdmin ? 'admins' : 'users';
+                const { data: user } = await supabase.from(table).select('*').eq('id', session.userId).single();
 
-            // Check admins first
-            let user = db.admins.find(a => a.email === email && a.password === pwd);
-            if (user) {
-                // Legacy data migration: if status is missing, assume Active
-                if (!user.status) { user.status = 'Active'; saveDB(); }
-
-                if (user.status === 'Active') {
+                if (user && user.status === 'Active') {
                     currentUser = user;
-                    isAdmin = true;
-                } else {
-                    return toast('Account is inactive. Contact support.', 'error');
+                    isAdmin = session.isAdmin;
+                    return true;
                 }
-            } else {
-                // Check users
-                user = db.users.find(u => u.email === email && u.password === pwd);
-                if (user) {
-                    if (!user.status) { user.status = 'Active'; saveDB(); }
+            } catch (e) { console.error(e); }
 
-                    if (user.status === 'Active') {
-                        currentUser = user;
-                        isAdmin = false;
-                    } else {
-                        return toast('Account is inactive. Contact support.', 'error');
-                    }
-                }
-            }
+            clearSession();
+            return false;
+        }
 
-            if (currentUser) {
-                saveSession();
-                showDashboard();
-            } else {
-                toast('Invalid credentials or account inactive!', 'error');
-            }
-        });
+        function clearSession() { localStorage.removeItem('digifiliate_session'); }
 
         function showDashboard() {
             document.getElementById('userName').textContent = currentUser.name.split(' ')[0];
@@ -1146,15 +1181,11 @@
             badge.textContent = isAdmin ? 'Admin' : 'User';
             badge.className = 'role-badge ' + (isAdmin ? 'admin' : 'user');
 
-            // Show/hide admin menu items
-            document.querySelectorAll('.admin-only').forEach(el => {
-                el.style.display = isAdmin ? 'block' : 'none';
-            });
-
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'block' : 'none');
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('appContainer').classList.add('active');
-            updateStats();
-            renderAll();
+
+            refreshData();
         }
 
         function logout() {
@@ -1166,176 +1197,326 @@
             document.getElementById('loginForm').reset();
         }
 
-        // Navigation with access control
+        // Access Control
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function () {
                 if (this.dataset.toggle === 'submenu') {
                     document.getElementById('submenu').classList.toggle('open');
                     return;
                 }
-                if (this.dataset.page) {
-                    const pageName = this.dataset.page;
-                    const adminPages = ['admins', 'users', 'campaigns', 'assign', 'viewUC', 'resetCount', 'settings'];
+                const pageName = this.dataset.page;
+                if (!pageName) return;
 
-                    if (adminPages.includes(pageName) && !isAdmin) {
-                        // Show access denied
-                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                        this.classList.add('active');
-                        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                        document.getElementById('accessDeniedPage').classList.add('active');
-                        toast('Admin access required!', 'warning');
-                        return;
-                    }
-
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    document.getElementById(pageName + 'Page').classList.add('active');
-                    document.getElementById('sidebar').classList.remove('open');
+                const adminPages = ['admins', 'users', 'campaigns', 'assign', 'viewUC', 'resetCount', 'settings'];
+                if (adminPages.includes(pageName) && !isAdmin) {
+                    toast('Admin access required!', 'warning');
+                    return;
                 }
+
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(pageName + 'Page').classList.add('active');
+                document.getElementById('sidebar').classList.remove('open');
             });
         });
 
-        // Stats
+        // UI & Rendering
         function updateStats() {
             const statsHtml = isAdmin ? `
-                <div class="stat-card"><h3><i class="fas fa-user-shield"></i> Admins</h3><div class="value">${db.admins.length}</div></div>
-                <div class="stat-card"><h3><i class="fas fa-users"></i> Users</h3><div class="value">${db.users.length}</div></div>
-                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> Campaigns</h3><div class="value">${db.campaigns.length}</div></div>
-                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Click Type</h3><div class="value">${db.campaigns.filter(c => c.type === 'Click').length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-user-shield"></i> Admins</h3><div class="value">${_admins.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-users"></i> Users</h3><div class="value">${_users.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> Campaigns</h3><div class="value">${_campaigns.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Click Type</h3><div class="value">${_campaigns.filter(c => c.type === 'Click').length}</div></div>
             ` : `
-                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> My Campaigns</h3><div class="value">${db.userCampaigns.filter(uc => uc.userId === currentUser.id).length}</div></div>
-                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Total Clicks</h3><div class="value">${db.userCampaigns.filter(uc => uc.userId === currentUser.id).reduce((s, uc) => s + uc.count, 0)}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-bullhorn"></i> My Campaigns</h3><div class="value">${_assignments.length}</div></div>
+                <div class="stat-card"><h3><i class="fas fa-mouse-pointer"></i> Total Clicks</h3><div class="value">${_assignments.reduce((s, a) => s + (a.count || 0), 0)}</div></div>
             `;
             document.getElementById('dashStats').innerHTML = statsHtml;
         }
 
-        // My Campaigns (User view)
-        function renderMyCampaigns() {
-            const userCamps = db.userCampaigns.filter(uc => uc.userId === currentUser.id);
-            const campaigns = userCamps.map(uc => {
-                const camp = db.campaigns.find(c => c.id === uc.campaignId);
-                return camp ? { ...camp, count: uc.count, ucId: uc.id } : null;
-            }).filter(Boolean);
-
-            document.getElementById('myCampaignsGrid').innerHTML = campaigns.length ? campaigns.map(c => `
-                <div class="campaign-card">
-                    <h3><i class="fas fa-bullhorn"></i> ${c.name}</h3>
-                    <p><strong>Offer ID:</strong> ${c.offerId}</p>
-                    <p><strong>Country:</strong> ${c.country}</p>
-                    <p><strong>Type:</strong> <span class="status ${c.type.toLowerCase()}">${c.type}</span></p>
-                    <p><strong>Link:</strong> <a href="${c.link}" target="_blank">${c.link}</a></p>
-                    <div class="count"><i class="fas fa-mouse-pointer"></i> ${c.count} Clicks</div>
-                </div>
-            `).join('') : '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:2rem;">No campaigns assigned yet. Please contact your administrator.</p>';
+        function renderAll() {
+            if (isAdmin) {
+                renderAdmins();
+                renderUsers();
+                renderCampaigns();
+                renderUC();
+                renderAssign();
+            } else {
+                renderMyCampaigns();
+            }
         }
 
-        // Render Tables
         function renderTable(data, tableId, infoId, pagId, key, rowFn) {
             const search = (document.getElementById(tableId.replace('Table', 'Search')) || {}).value?.toLowerCase() || '';
             const filtered = data.filter(i => JSON.stringify(i).toLowerCase().includes(search));
-            const perPage = 10, totalPages = Math.ceil(filtered.length / perPage) || 1;
+            const perPage = 10;
+            const totalPages = Math.ceil(filtered.length / perPage) || 1;
             page[key] = Math.min(page[key], totalPages);
             const start = (page[key] - 1) * perPage;
             const items = filtered.slice(start, start + perPage);
+
             document.getElementById(tableId).innerHTML = items.length ? items.map(rowFn).join('') : '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>';
             document.getElementById(infoId).textContent = `${filtered.length ? start + 1 : 0}-${Math.min(start + perPage, filtered.length)} of ${filtered.length}`;
+
             let html = `<button onclick="goPage('${key}',-1)" ${page[key] === 1 ? 'disabled' : ''}>‹</button>`;
-            for (let i = 1; i <= totalPages; i++)html += `<button class="${i === page[key] ? 'active' : ''}" onclick="goPage('${key}',${i},true)">${i}</button>`;
+            for (let i = 1; i <= totalPages; i++) html += `<button class="${i === page[key] ? 'active' : ''}" onclick="goPage('${key}',${i},true)">${i}</button>`;
             html += `<button onclick="goPage('${key}',1)" ${page[key] === totalPages ? 'disabled' : ''}>›</button>`;
             document.getElementById(pagId).innerHTML = html;
         }
+
         function goPage(k, v, abs = false) { page[k] = abs ? v : page[k] + v; renderAll(); }
 
         function renderAdmins() {
-            renderTable(db.admins, 'adminTable', 'adminInfo', 'adminPag', 'admins', a => `<tr><td>${a.name}</td><td>${a.email}</td><td><span class="status ${a.status.toLowerCase()}">${a.status}</span></td><td class="actions"><button class="action-btn edit" onclick="editAdmin(${a.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openAdminPwd(${a.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delAdmin(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(_admins, 'adminTable', 'adminInfo', 'adminPag', 'admins', a => `<tr><td>${a.name}</td><td>${a.email}</td><td><span class="status ${a.status.toLowerCase()}">${a.status}</span></td><td class="actions"><button class="action-btn edit" onclick="editAdmin(${a.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openAdminPwd(${a.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delAdmin(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
         function renderUsers() {
-            renderTable(db.users, 'userTable', 'userInfo', 'userPag', 'users', u => `<tr><td>${u.name}</td><td>${u.email}</td><td><span class="status ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.type}</td><td class="actions"><button class="action-btn edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openUserPwd(${u.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delUser(${u.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(_users, 'userTable', 'userInfo', 'userPag', 'users', u => `<tr><td>${u.name}</td><td>${u.email}</td><td><span class="status ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.type}</td><td class="actions"><button class="action-btn edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button><button class="action-btn key" onclick="openUserPwd(${u.id})"><i class="fas fa-key"></i></button><button class="action-btn delete" onclick="delUser(${u.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
         function renderCampaigns() {
-            renderTable(db.campaigns, 'campTable', 'campInfo', 'campPag', 'camps', c => `<tr><td>${c.name}</td><td>${c.offerId}</td><td>${c.country}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary)">${c.link.substring(0, 30)}...</a></td><td><span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></td><td class="actions"><button class="action-btn edit" onclick="editCamp(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="delCamp(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
+            renderTable(_campaigns, 'campTable', 'campInfo', 'campPag', 'camps', c => `<tr><td>${c.name}</td><td>${c.offer_id || '-'}</td><td>${c.country || '-'}</td><td><a href="${c.link}" target="_blank" style="color:var(--primary)">${(c.link || '').substring(0, 30)}...</a></td><td><span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></td><td class="actions"><button class="action-btn edit" onclick="editCamp(${c.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="delCamp(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`);
         }
         function renderUC() {
-            document.getElementById('ucTable').innerHTML = db.userCampaigns.length ? db.userCampaigns.map(uc => {
-                const u = db.users.find(x => x.id === uc.userId);
-                const c = db.campaigns.find(x => x.id === uc.campaignId);
-                return `<tr><td>${u?.name || '<em>Deleted</em>'}</td><td>${c?.name || '<em>Deleted</em>'}</td><td>${c?.country || '-'}</td><td><span class="status ${(c?.type || 'click').toLowerCase()}">${c?.type || 'Click'}</span></td><td>${uc.count}</td><td class="actions"><button class="action-btn delete" onclick="delUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+            document.getElementById('ucTable').innerHTML = _assignments.length ? _assignments.map(uc => {
+                const u = _users.find(x => x.id === uc.user_id);
+                const c = _campaigns.find(x => x.id === uc.campaign_id);
+                return `<tr><td>${u?.name || '<em>Unknown</em>'}</td><td>${c?.name || '<em>Unknown</em>'}</td><td>${c?.country || '-'}</td><td><span class="status ${(c?.type || 'click').toLowerCase()}">${c?.type || 'Click'}</span></td><td>${uc.count}</td><td class="actions"><button class="action-btn delete" onclick="delUC(${uc.id})"><i class="fas fa-trash"></i></button></td></tr>`;
             }).join('') : '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">No assignments</td></tr>';
         }
         function renderAssign() {
-            document.getElementById('assignUser').innerHTML = '<option value="">Select User...</option>' + db.users.filter(u => u.status === 'Active').map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
-            document.getElementById('assignList').innerHTML = db.campaigns.length ? db.campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="ac_${c.id}" value="${c.id}"><label for="ac_${c.id}">${c.name} - ${c.country} <span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></label></div>`).join('') : '<p style="padding:1rem;color:var(--text-muted);">No campaigns available</p>';
+            document.getElementById('assignUser').innerHTML = '<option value="">Select User...</option>' + _users.filter(u => u.status === 'Active').map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+            document.getElementById('assignList').innerHTML = _campaigns.length ? _campaigns.map(c => `<div class="campaign-item"><input type="checkbox" id="ac_${c.id}" value="${c.id}"><label for="ac_${c.id}">${c.name} - ${c.country} <span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></label></div>`).join('') : '<p style="padding:1rem;color:var(--text-muted);">No campaigns available</p>';
         }
-        function renderAll() { renderAdmins(); renderUsers(); renderCampaigns(); renderUC(); renderAssign(); renderMyCampaigns(); }
 
-        // CRUD Admins
-        function openAddAdmin() { document.getElementById('adminEditId').value = ''; document.getElementById('adminName').value = ''; document.getElementById('adminEmail').value = ''; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = 'Active'; document.getElementById('adminModalTitle').textContent = 'Add Admin'; openModal('adminModal'); }
-        function editAdmin(id) { const a = db.admins.find(x => x.id === id); document.getElementById('adminEditId').value = id; document.getElementById('adminName').value = a.name; document.getElementById('adminEmail').value = a.email; document.getElementById('adminPwd').value = ''; document.getElementById('adminStatus').value = a.status; document.getElementById('adminModalTitle').textContent = 'Edit Admin'; openModal('adminModal'); }
-        function saveAdmin() {
+        function renderMyCampaigns() {
+            const html = _assignments.length ? _assignments.map(assign => {
+                const c = _campaigns.find(c => c.id === assign.campaign_id);
+                if (!c) return '';
+                return `
+                <div class="campaign-card">
+                    <h3><i class="fas fa-bullhorn"></i> ${c.name}</h3>
+                    <p><strong>Offer ID:</strong> ${c.offer_id || 'N/A'}</p>
+                    <p><strong>Country:</strong> ${c.country}</p>
+                    <p><strong>Type:</strong> <span class="status ${(c.type || 'click').toLowerCase()}">${c.type || 'Click'}</span></p>
+                    <p><strong>Link:</strong> <a href="${c.link}" target="_blank">${c.link}</a></p>
+                    <div class="count"><i class="fas fa-mouse-pointer"></i> ${assign.count} Clicks</div>
+                </div>`;
+            }).join('') : '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:2rem;">No campaigns assigned yet.</p>';
+            document.getElementById('myCampaignsGrid').innerHTML = html;
+        }
+
+        // --- CRUD ADMINS ---
+        function openAddAdmin() {
+            document.getElementById('adminEditId').value = '';
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPwd').value = '';
+            document.getElementById('adminStatus').value = 'Active';
+            document.getElementById('adminModalTitle').textContent = 'Add Admin';
+            openModal('adminModal');
+        }
+        function editAdmin(id) {
+            const a = _admins.find(x => x.id === id);
+            document.getElementById('adminEditId').value = id;
+            document.getElementById('adminName').value = a.name;
+            document.getElementById('adminEmail').value = a.email;
+            document.getElementById('adminPwd').value = '';
+            document.getElementById('adminStatus').value = a.status;
+            document.getElementById('adminModalTitle').textContent = 'Edit Admin';
+            openModal('adminModal');
+        }
+        async function saveAdmin() {
             const id = document.getElementById('adminEditId').value;
-            const data = { name: document.getElementById('adminName').value, email: document.getElementById('adminEmail').value, status: document.getElementById('adminStatus').value };
+            const name = document.getElementById('adminName').value;
+            const email = document.getElementById('adminEmail').value;
+            const status = document.getElementById('adminStatus').value;
             const pwd = document.getElementById('adminPwd').value;
-            if (!data.name || !data.email) return toast('Fill all fields', 'error');
-            if (id) { const a = db.admins.find(x => x.id == id); Object.assign(a, data); if (pwd) a.password = pwd; }
-            else { if (!pwd) return toast('Password required', 'error'); db.admins.push({ id: Date.now(), ...data, password: pwd }); }
-            saveDB(); closeModal('adminModal'); updateStats(); renderAdmins(); toast('Saved!');
-        }
-        function delAdmin(id) { if (db.admins.length === 1) return toast('Cannot delete last admin', 'error'); if (confirm('Delete this admin?')) { db.admins = db.admins.filter(a => a.id !== id); saveDB(); updateStats(); renderAdmins(); toast('Deleted!'); } }
-        function openAdminPwd(id) { document.getElementById('adminPwdId').value = id; document.getElementById('newAdminPwd').value = ''; document.getElementById('confirmAdminPwd').value = ''; openModal('adminPwdModal'); }
-        function resetAdminPwd() { const id = document.getElementById('adminPwdId').value; const p = document.getElementById('newAdminPwd').value; const c = document.getElementById('confirmAdminPwd').value; if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); db.admins.find(a => a.id == id).password = p; saveDB(); closeModal('adminPwdModal'); toast('Password updated!'); }
-        function changeMyPwd() { const curr = document.getElementById('currPwd').value; const p = document.getElementById('myNewPwd').value; const c = document.getElementById('myConfirmPwd').value; if (currentUser.password !== curr) return toast('Wrong current password', 'error'); if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); currentUser.password = p; if (isAdmin) { db.admins.find(a => a.id === currentUser.id).password = p; } else { db.users.find(u => u.id === currentUser.id).password = p; } saveDB(); closeModal('myPwdModal'); toast('Password changed!'); }
 
-        // CRUD Users
-        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInp').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = 'Active'; document.getElementById('userType').value = 'Punch'; document.getElementById('userModalTitle').textContent = 'Add User'; openModal('userModal'); }
-        function editUser(id) { const u = db.users.find(x => x.id === id); document.getElementById('userEditId').value = id; document.getElementById('userNameInp').value = u.name; document.getElementById('userEmail').value = u.email; document.getElementById('userPwd').value = ''; document.getElementById('userStatus').value = u.status; document.getElementById('userType').value = u.type; document.getElementById('userModalTitle').textContent = 'Edit User'; openModal('userModal'); }
-        function saveUser() {
-            const id = document.getElementById('userEditId').value;
-            const data = { name: document.getElementById('userNameInp').value, email: document.getElementById('userEmail').value, status: document.getElementById('userStatus').value, type: document.getElementById('userType').value };
-            const pwd = document.getElementById('userPwd').value;
-            if (!data.name || !data.email) return toast('Fill all fields', 'error');
-            if (id) { const u = db.users.find(x => x.id == id); Object.assign(u, data); if (pwd) u.password = pwd; }
-            else { if (!pwd) return toast('Password required', 'error'); db.users.push({ id: Date.now(), ...data, password: pwd }); }
-            saveDB(); closeModal('userModal'); updateStats(); renderAll(); toast('Saved!');
-        }
-        function delUser(id) { if (confirm('Delete this user?')) { db.users = db.users.filter(u => u.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.userId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
-        function openUserPwd(id) { document.getElementById('userPwdId').value = id; document.getElementById('newUserPwd').value = ''; document.getElementById('confirmUserPwd').value = ''; openModal('userPwdModal'); }
-        function resetUserPwd() { const id = document.getElementById('userPwdId').value; const p = document.getElementById('newUserPwd').value; const c = document.getElementById('confirmUserPwd').value; if (p !== c) return toast('Passwords do not match', 'error'); if (p.length < 4) return toast('Min 4 characters', 'error'); db.users.find(u => u.id == id).password = p; saveDB(); closeModal('userPwdModal'); toast('Password updated!'); }
+            if (!name || !email) return toast('Fill details', 'error');
 
-        // CRUD Campaigns
-        function openAddCampaign() { document.getElementById('campEditId').value = ''; document.getElementById('campName').value = ''; document.getElementById('campOffer').value = ''; document.getElementById('campLink').value = ''; document.getElementById('campType').value = 'Click'; document.getElementById('campModalTitle').textContent = 'Add Campaign'; openModal('campModal'); }
-        function editCamp(id) { const c = db.campaigns.find(x => x.id === id); document.getElementById('campEditId').value = id; document.getElementById('campName').value = c.name; document.getElementById('campOffer').value = c.offerId; document.getElementById('campCountry').value = c.country; document.getElementById('campLink').value = c.link; document.getElementById('campType').value = c.type || 'Click'; document.getElementById('campModalTitle').textContent = 'Edit Campaign'; openModal('campModal'); }
-        function saveCampaign() {
-            const id = document.getElementById('campEditId').value;
-            const data = { name: document.getElementById('campName').value, offerId: document.getElementById('campOffer').value, country: document.getElementById('campCountry').value, link: document.getElementById('campLink').value, type: document.getElementById('campType').value, created: new Date().toISOString().split('T')[0] };
-            if (!data.name) return toast('Name required', 'error');
-            if (id) { const c = db.campaigns.find(x => x.id == id); Object.assign(c, data); }
-            else { db.campaigns.push({ id: Date.now(), ...data }); }
-            saveDB(); closeModal('campModal'); updateStats(); renderAll(); toast('Saved!');
-        }
-        function delCamp(id) { if (confirm('Delete this campaign?')) { db.campaigns = db.campaigns.filter(c => c.id !== id); db.userCampaigns = db.userCampaigns.filter(uc => uc.campaignId !== id); saveDB(); updateStats(); renderAll(); toast('Deleted!'); } }
+            const payload = { name, email, status };
+            if (pwd) payload.password = pwd;
 
-        // Assign & Reset
-        function checkAll(v) { document.querySelectorAll('#assignList input').forEach(cb => cb.checked = v); }
-        function submitAssign() {
-            const userId = parseInt(document.getElementById('assignUser').value);
-            if (!userId) return toast('Select a user first', 'error');
-            const checked = document.querySelectorAll('#assignList input:checked');
-            if (!checked.length) return toast('Select at least one campaign', 'error');
-            let added = 0;
-            checked.forEach(cb => {
-                const cid = parseInt(cb.value);
-                if (!db.userCampaigns.find(uc => uc.userId === userId && uc.campaignId === cid)) {
-                    db.userCampaigns.push({ id: Date.now() + Math.random(), userId: userId, campaignId: cid, count: 0 });
-                    added++;
+            try {
+                if (id) {
+                    await supabase.from('admins').update(payload).eq('id', id).throwOnError();
+                } else {
+                    if (!pwd) return toast('Password required for new admin', 'error');
+                    await supabase.from('admins').insert([payload]).throwOnError();
                 }
-            });
-            saveDB(); renderAll();
-            if (added > 0) toast(`${added} campaign(s) assigned!`);
-            else toast('Campaigns already assigned', 'warning');
+                closeModal('adminModal');
+                toast('Saved!');
+                refreshData();
+            } catch (e) { toast(e.message || 'Error saving', 'error'); }
         }
-        function delUC(id) { if (confirm('Remove this assignment?')) { db.userCampaigns = db.userCampaigns.filter(uc => uc.id !== id); saveDB(); renderAll(); toast('Removed!'); } }
-        function resetCounts() { if (confirm('Reset all counts to zero?')) { db.userCampaigns.forEach(uc => uc.count = 0); saveDB(); renderAll(); toast('All counts reset!'); } }
+        async function delAdmin(id) {
+            if (_admins.length === 1) return toast('Cannot delete last admin', 'error');
+            if (confirm('Delete this admin?')) {
+                await supabase.from('admins').delete().eq('id', id);
+                refreshData();
+                toast('Deleted!');
+            }
+        }
+        function openAdminPwd(id) { document.getElementById('adminPwdId').value = id; document.getElementById('newAdminPwd').value = ''; document.getElementById('confirmAdminPwd').value = ''; openModal('adminPwdModal'); }
+        async function resetAdminPwd() {
+            const id = document.getElementById('adminPwdId').value;
+            const p = document.getElementById('newAdminPwd').value;
+            const c = document.getElementById('confirmAdminPwd').value;
+            if (p !== c || p.length < 4) return toast('Invalid password', 'error');
+
+            try {
+                await supabase.from('admins').update({ password: p }).eq('id', id).throwOnError();
+                closeModal('adminPwdModal');
+                toast('Updated!');
+                refreshData();
+            } catch (e) { toast('Error updating', 'error'); }
+        }
+
+        // --- CRUD USERS ---
+        function openAddUser() { document.getElementById('userEditId').value = ''; document.getElementById('userNameInp').value = ''; document.getElementById('userEmail').value = ''; document.getElementById('userPwd').value = ''; document.getElementById('userType').value = 'Punch'; openModal('userModal'); }
+        function editUser(id) { const u = _users.find(x => x.id === id); document.getElementById('userEditId').value = id; document.getElementById('userNameInp').value = u.name; document.getElementById('userEmail').value = u.email; document.getElementById('userStatus').value = u.status; document.getElementById('userType').value = u.type; openModal('userModal'); }
+        async function saveUser() {
+            const id = document.getElementById('userEditId').value;
+            const payload = {
+                name: document.getElementById('userNameInp').value,
+                email: document.getElementById('userEmail').value,
+                status: document.getElementById('userStatus').value,
+                type: document.getElementById('userType').value
+            };
+            const pwd = document.getElementById('userPwd').value;
+
+            try {
+                if (id) {
+                    if (pwd) payload.password = pwd;
+                    await supabase.from('users').update(payload).eq('id', id).throwOnError();
+                } else {
+                    if (!pwd) return toast('Password required', 'error');
+                    payload.password = pwd;
+                    await supabase.from('users').insert([payload]).throwOnError();
+                }
+                closeModal('userModal');
+                toast('Saved!');
+                refreshData();
+            } catch (e) { toast(e.message, 'error'); }
+        }
+        async function delUser(id) {
+            if (confirm('Delete user?')) {
+                await supabase.from('users').delete().eq('id', id);
+                refreshData();
+                toast('Deleted!');
+            }
+        }
+        function openUserPwd(id) { document.getElementById('userPwdId').value = id; document.getElementById('newUserPwd').value = ''; document.getElementById('confirmUserPwd').value = ''; openModal('userPwdModal'); }
+        async function resetUserPwd() {
+            const id = document.getElementById('userPwdId').value;
+            const p = document.getElementById('newUserPwd').value;
+            if (p !== document.getElementById('confirmUserPwd').value) return toast('Mismatch', 'error');
+            await supabase.from('users').update({ password: p }).eq('id', id);
+            closeModal('userPwdModal'); toast('Updated');
+        }
+
+        // --- CRUD CAMPAIGNS ---
+        function openAddCampaign() {
+            document.getElementById('campEditId').value = '';
+            document.getElementById('campName').value = '';
+            document.getElementById('campOffer').value = '';
+            document.getElementById('campLink').value = '';
+            openModal('campModal');
+        }
+        function editCamp(id) {
+            const c = _campaigns.find(x => x.id === id);
+            document.getElementById('campEditId').value = id;
+            document.getElementById('campName').value = c.name;
+            document.getElementById('campOffer').value = c.offer_id;
+            document.getElementById('campCountry').value = c.country;
+            document.getElementById('campLink').value = c.link;
+            document.getElementById('campType').value = c.type;
+            openModal('campModal');
+        }
+        async function saveCampaign() {
+            const id = document.getElementById('campEditId').value;
+            const payload = {
+                name: document.getElementById('campName').value,
+                offer_id: document.getElementById('campOffer').value,
+                country: document.getElementById('campCountry').value,
+                link: document.getElementById('campLink').value,
+                type: document.getElementById('campType').value
+            };
+
+            try {
+                if (id) await supabase.from('campaigns').update(payload).eq('id', id).throwOnError();
+                else await supabase.from('campaigns').insert([payload]).throwOnError();
+                closeModal('campModal');
+                toast('Saved');
+                refreshData();
+            } catch (e) { toast(e.message, 'error'); }
+        }
+        async function delCamp(id) {
+            if (confirm('Delete campaign?')) {
+                await supabase.from('campaigns').delete().eq('id', id);
+                refreshData();
+                toast('Deleted');
+            }
+        }
+
+        // --- ASSIGNMENTS ---
+        function checkAll(v) { document.querySelectorAll('#assignList input').forEach(cb => cb.checked = v); }
+        async function submitAssign() {
+            const userId = document.getElementById('assignUser').value;
+            if (!userId) return toast('Select user', 'error');
+            const checked = Array.from(document.querySelectorAll('#assignList input:checked')).map(cb => parseInt(cb.value));
+            if (!checked.length) return toast('Select campaigns', 'error');
+
+            try {
+                // Prepare assignments
+                // Note: On duplicate, we might want to ignore or update.
+                // Supabase upsert with conflict on (user_id, campaign_id)
+                // We must ensure the unique constraint exists in DB (I added it in the DDL).
+                const inserts = checked.map(cid => ({ user_id: userId, campaign_id: cid, count: 0 }));
+
+                const { error } = await supabase.from('assignments').upsert(inserts, { onConflict: 'user_id,campaign_id', ignoreDuplicates: true });
+                if (error) throw error;
+                toast('Assigned!');
+                refreshData();
+            } catch (e) { toast(e.message, 'error'); }
+        }
+        async function delUC(id) {
+            if (confirm('Remove assignment?')) {
+                await supabase.from('assignments').delete().eq('id', id);
+                refreshData();
+                toast('Removed');
+            }
+        }
+        async function resetCounts() {
+            if (confirm('Reset all assignment counts to 0?')) {
+                // Hack: update where id > 0
+                await supabase.from('assignments').update({ count: 0 }).gt('id', 0);
+                refreshData();
+                toast('Reset!');
+            }
+        }
+
+        // --- SETTINGS / MISC ---
+        async function changeMyPwd() {
+            const curr = document.getElementById('currPwd').value;
+            const p = document.getElementById('myNewPwd').value;
+
+            if (currentUser.password !== curr) return toast('Current password wrong', 'error');
+            if (p !== document.getElementById('myConfirmPwd').value) return toast('Mismatch', 'error');
+
+            try {
+                const table = isAdmin ? 'admins' : 'users';
+                await supabase.from(table).update({ password: p }).eq('id', currentUser.id).throwOnError();
+                currentUser.password = p; // update local
+                closeModal('myPwdModal');
+                toast('Updated!');
+            } catch (e) { toast('Error', 'error'); }
+        }
+
+        // Data Migration UI - Removed logic but kept button just in case, but made it alert
+        function exportDB() { alert('Feature removed in Supabase version.'); }
+        function importDB() { alert('Feature removed in Supabase version.'); }
+        function resetDB() { alert('Use database tools to reset.'); }
 
         // Theme
         function toggleTheme() {
@@ -1345,12 +1526,12 @@
         }
         if (localStorage.getItem('theme') === 'light') { document.body.setAttribute('data-theme', 'light'); document.getElementById('themeIcon').className = 'fas fa-sun'; }
 
-        // Check session on load
-        if (loadSession()) {
-            showDashboard();
-        }
-
-        renderAll();
+        // Start
+        (async function () {
+            if (await loadSession()) {
+                showDashboard();
+            }
+        })();
     </script>
 </body>
 
